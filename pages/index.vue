@@ -22,11 +22,46 @@
         </a>
       </div>
     </div>
+    <video ref="videoPlayer" class="video-js vjs-big-play-centered"></video>
   </div>
 </template>
 
 <script>
-export default {}
+import videojs from 'video.js'
+export default {
+  props: {
+    options: {
+      type: Object,
+      default() {
+        return {
+          autoplay: true,
+          controls: true,
+          sources: [
+            {
+              src:
+                'http://d100q3wt0wdr5h.cloudfront.net/encoded/23/23test.m3u8',
+              type: 'application/x-mpegURL',
+            },
+          ],
+        }
+      },
+    },
+  },
+  data() {
+    return {
+      player: null,
+    }
+  },
+  mounted() {
+    this.player = videojs(
+      this.$refs.videoPlayer,
+      this.options,
+      function onPlayerReady() {
+        console.log('onPlayerReady', this)
+      }
+    )
+  },
+}
 </script>
 
 <style>
