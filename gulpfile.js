@@ -4,7 +4,13 @@ const cloudfront = require('gulp-cloudfront-invalidate-aws-publish')
 const parallelize = require('concurrent-transform')
 
 // https://docs.aws.amazon.com/cli/latest/userguide/cli-environment.html
-
+console.log("||||||||||||||")
+console.log(process.env.AWS_BUCKET_NAME)
+console.log("||||||||||||||")
+console.log(process.env.AWS_CLOUDFRONT)
+console.log("||||||||||||||")
+console.log(process.env.AWS_DEFAULT_REGION)
+console.log("||||||||||||||")
 const config = {
   // 必須
   params: {
