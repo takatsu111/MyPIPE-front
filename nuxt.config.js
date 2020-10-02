@@ -2,7 +2,7 @@ export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
-  mode: "spa",
+  mode: 'spa',
 
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'static',
@@ -19,9 +19,7 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: ['@/node_modules/video.js/dist/video-js.css',
-  '@/assets/scss/app.scss',
-  '@/assets/css/reset.css'],
+  css: ['@/node_modules/video.js/dist/video-js.css', '@/assets/scss/app.scss'],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [],
