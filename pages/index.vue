@@ -22,7 +22,12 @@
         </a>
       </div>
     </div>
-    <video ref="videoPlayer" class="video-js vjs-big-play-centered"></video>
+    <video
+      ref="videoPlayer"
+      class="video-js vjs-big-play-centered"
+      width="640"
+      height="360"
+    ></video>
   </div>
 </template>
 
@@ -38,8 +43,7 @@ export default {
           controls: true,
           sources: [
             {
-              src:
-                'http://d100q3wt0wdr5h.cloudfront.net/encoded/23/23test.m3u8',
+              src: '',
               type: 'application/x-mpegURL',
             },
           ],
