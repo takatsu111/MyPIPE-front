@@ -16,11 +16,11 @@ const config = {
   params: {
     Bucket: process.env.AWS_BUCKET_NAME
   },
-//   credentials: {
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//     signatureVersion: 'v3'
-//   },
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    signatureVersion: 'v3'
+  },
 
   // 任意
   deleteOldVersions: false, // PRODUCTION で使用しない
