@@ -2,7 +2,8 @@
   <div class="container">
     <div>
       <Logo />
-      <h1 class="title">mypipe-front</h1>
+      <h1 class="title">mypipe-frontあああこんにちはaaaaa</h1>
+      <p>コンンンンンいちっち父父</p>
       <div class="links">
         <a
           href="https://nuxtjs.org/"
@@ -69,7 +70,7 @@ export default {
 </script>
 
 <style>
-.container {
+/* .container {
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
@@ -98,5 +99,5 @@ export default {
 
 .links {
   padding-top: 15px;
-}
+} */
 </style>

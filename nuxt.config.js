@@ -19,7 +19,9 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: ['@/node_modules/video.js/dist/video-js.css'],
+  css: ['@/node_modules/video.js/dist/video-js.css',
+  '@/assets/scss/app.scss',
+  '@/assets/css/reset.css'],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [],
