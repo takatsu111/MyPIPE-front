@@ -53,20 +53,28 @@ gulp.task('deploy', function () {
   // CDN のキャッシュを削除する
   if (config.distribution) {
     console.log('Configured with CloudFront distribution')
+    console.log("11111111")
     g = g.pipe(cloudfront(config))
+    console.log("22222")
   } else {
     console.log(
       'No CloudFront distribution configured - skipping CDN invalidation'
     )
   }
+  console.log("333333")
 
   // 削除したファイルを同期する
   if (config.deleteOldVersions) {
+    console.log("44444")
     g = g.pipe(publisher.sync())
+    console.log("55555")
   }
   // 連続したアップロードを高速化するためにキャッシュファイルを作成する
+  console.log("6666")
   g = g.pipe(publisher.cache())
+  console.log("7777")
   // アップロードの更新をコンソールに出力する
   g = g.pipe(awspublish.reporter())
+  console.log("8888")
   return g
 })
