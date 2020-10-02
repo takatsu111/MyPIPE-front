@@ -4,22 +4,22 @@ const cloudfront = require('gulp-cloudfront-invalidate-aws-publish')
 const parallelize = require('concurrent-transform')
 
 // https://docs.aws.amazon.com/cli/latest/userguide/cli-environment.html
-console.log("||||||||||||||")
+console.log('||||||||||||||')
 console.log(process.env.AWS_BUCKET_NAME)
-console.log("||||||||||||||")
+console.log('||||||||||||||')
 console.log(process.env.AWS_CLOUDFRONT)
-console.log("||||||||||||||")
+console.log('||||||||||||||')
 console.log(process.env.AWS_DEFAULT_REGION)
-console.log("||||||||||||||")
+console.log('||||||||||||||')
 const config = {
   // 必須
   params: {
-    Bucket: process.env.AWS_BUCKET_NAME
+    Bucket: process.env.AWS_BUCKET_NAME,
   },
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    signatureVersion: 'v3'
+    signatureVersion: 'v3',
   },
 
   // 任意
@@ -35,7 +35,7 @@ const config = {
   indexRootPath: true,
   cacheFileName: '.awspublish',
   concurrentUploads: 10,
-  wait: true // CloudFront のキャッシュ削除が完了するまでの時間（約30〜60秒）
+  wait: true, // CloudFront のキャッシュ削除が完了するまでの時間（約30〜60秒）
 }
 
 gulp.task('deploy', function () {
@@ -53,28 +53,28 @@ gulp.task('deploy', function () {
   // CDN のキャッシュを削除する
   if (config.distribution) {
     console.log('Configured with CloudFront distribution')
-    console.log("11111111")
+    console.log('11111111')
     g = g.pipe(cloudfront(config))
-    console.log("22222")
+    console.log('22222')
   } else {
     console.log(
       'No CloudFront distribution configured - skipping CDN invalidation'
     )
   }
-  console.log("333333")
+  console.log('333333')
 
   // 削除したファイルを同期する
   if (config.deleteOldVersions) {
-    console.log("44444")
+    console.log('44444')
     g = g.pipe(publisher.sync())
-    console.log("55555")
+    console.log('55555')
   }
   // 連続したアップロードを高速化するためにキャッシュファイルを作成する
-  console.log("6666")
+  console.log('6666')
   g = g.pipe(publisher.cache())
-  console.log("7777")
+  console.log('7777')
   // アップロードの更新をコンソールに出力する
   g = g.pipe(awspublish.reporter())
-  console.log("8888")
+  console.log('8888')
   return g
 })
