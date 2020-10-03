@@ -1,9 +1,79 @@
 <template>
-  <div>
-    <Header />
-    <Nuxt />
-  </div>
+  <v-app>
+    <v-navigation-drawer
+      v-model="drawer"
+      :mini-variant="miniVariant"
+      :clipped="clipped"
+      :expandOnHover="expandOnHover"
+      fixed
+      app
+    >
+      <v-divider />
+      <v-list nav>
+        <v-list-item>
+          <v-list-item-title class="title" height="64">
+            Application
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item v-for="menu in menus" :key="menu.title" :to="menu.url">
+          <v-list-item-icon>
+            <v-icon>{{ menu.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ menu.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-content>
+      <header>
+        <v-app-bar color="#06ACB5" dark>
+          <v-toolbar-title color="white">MyPIPE</v-toolbar-title>
+        </v-app-bar>
+      </header>
+      <Nuxt />
+    </v-content>
+  </v-app>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      menus: [
+        { title: 'Index', icon: 'mdi-web', url: '/' },
+        { title: 'Home', icon: 'mdi-home', url: '/home' },
+        { title: 'Favorites', icon: 'mdi-heart', url: '/favorites' },
+        { title: 'About', icon: 'mdi-information-variant', url: '/about' },
+      ],
+      clipped: false,
+      drawer: true,
+      fixed: false,
+      items: [
+        {
+          icon: 'home',
+          title: 'Index',
+          to: '/',
+        },
+        {
+          icon: 'person',
+          title: 'profile',
+          to: '/profile',
+        },
+        {
+          icon: 'list_alt',
+          title: 'articles',
+          to: '/articles',
+        },
+      ],
+      miniVariant: false,
+      expandOnHover: true,
+      title: 'H-UENO',
+    }
+  },
+}
+</script>
 
 <style>
 /* html {

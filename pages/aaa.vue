@@ -1,28 +1,5 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">mypipe-frontあああこんにちはaaaaa</h1>
-      <p>コンンンンンいちっち父父</p>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
     <video
       ref="videoPlayer"
       class="video-js vjs-big-play-centered"
