@@ -1,49 +1,17 @@
 <template>
-  <div class="container">
-    <video
-      ref="videoPlayer"
-      class="video-js vjs-big-play-centered"
-      width="640"
-      height="360"
-    ></video>
-  </div>
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="6">
+        <v-card>
+          <v-card-title>Hello, Vuetify!</v-card-title>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import videojs from 'video.js'
-export default {
-  props: {
-    options: {
-      type: Object,
-      default() {
-        return {
-          autoplay: true,
-          controls: true,
-          sources: [
-            {
-              src: '',
-              type: 'application/x-mpegURL',
-            },
-          ],
-        }
-      },
-    },
-  },
-  data() {
-    return {
-      player: null,
-    }
-  },
-  mounted() {
-    this.player = videojs(
-      this.$refs.videoPlayer,
-      this.options,
-      function onPlayerReady() {
-        console.log('onPlayerReady', this)
-      }
-    )
-  },
-}
+export default {}
 </script>
 
 <style>
