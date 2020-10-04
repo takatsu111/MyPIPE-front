@@ -1,9 +1,56 @@
 <template>
   <v-container>
-    <v-row justify="center">
-      <v-col cols="6">
-        <v-card>
-          <v-card-title>Hello, Vuetify!</v-card-title>
+    <v-row no-gutters>
+      <v-col
+        v-for="movie in movies"
+        :key="movie.id"
+        cols="12"
+        xl="3"
+        lg="4"
+        md="6"
+      >
+        <v-card
+          class="mx-auto mb-7"
+          width="200"
+          link
+          nuxt
+          :to="'/movies/' + movie.id"
+        >
+          <v-img :src="movie.thumbNail" width="200px" height="auto"></v-img>
+
+          <v-card-text text--primary
+            ><div class="text--primary">
+              {{ movie.name }}
+            </div></v-card-text
+          >
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  color="#06ACB5"
+                  v-bind="attrs"
+                  x-small
+                  @click.stop.prevent
+                  v-on="on"
+                >
+                  <v-icon>mdi-menu</v-icon>
+                </v-btn>
+              </template>
+              <v-list dense>
+                <v-list-item v-for="(item, i) in items" :key="i" link>
+                  <v-list-item-icon>
+                    <v-icon v-text="item.icon"></v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item.text"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -11,7 +58,27 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      movies: [],
+      items: [
+        { text: 'Real-Time', icon: 'mdi-clock' },
+        { text: 'Audience', icon: 'mdi-account' },
+        { text: 'Conversions', icon: 'mdi-flag' },
+      ],
+      show: false,
+    }
+  },
+  async mounted() {
+    this.movies = await this.$axios.$get('/movies')
+  },
+  methods: {
+    clicked() {
+      console.log('clicked')
+    },
+  },
+}
 </script>
 
 <style>
