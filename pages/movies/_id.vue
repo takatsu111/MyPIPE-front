@@ -35,6 +35,10 @@
             class="mr-4 mb-8"
             >投稿</v-btn
           >
+          <ServerErrorMessage
+            v-show="postCommentError"
+            message="コメントの投稿に失敗しました"
+          />
         </v-form>
         <v-divider></v-divider>
         <v-list three-line>
@@ -92,6 +96,7 @@ export default {
       items: [],
       comment: null,
       postCommentInProgress: false,
+      postCommentError: false,
     }
   },
   async mounted() {
@@ -109,15 +114,13 @@ export default {
     )
   },
   methods: {
-    getElem(e) {
-      console.log(e.currentTarget.clientHeight)
-    },
     async postComment() {
       if (this.comment === null) {
         return
       }
 
       this.postCommentInProgress = true
+      this.postCommentError = false
 
       const data = this
       const movieId = this.movieId
@@ -140,6 +143,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
+          this.postCommentError = true
         })
 
       this.postCommentInProgress = false
