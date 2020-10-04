@@ -1,7 +1,7 @@
 const movies = [
   {
     id: 35,
-    name: '宮古・神の島のさざなみ',
+    name: '宮古・神の島のさざな',
     description: 'この動画は宮古島の神の島、大神島で撮影した波の音の映像です。',
     thumbNail: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
     category: '旅行とイベント',
