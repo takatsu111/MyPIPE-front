@@ -10,3 +10,8 @@ phases:
       - yarn --version
       - yarn install
       - yarn lint
+
+cache:
+  paths:
+    - './node_modules/**/*'
+    - './vendor/**/*'
