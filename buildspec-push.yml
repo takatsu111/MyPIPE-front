@@ -10,6 +10,7 @@ phases:
       - yarn --version
       - yarn install
       - yarn lint
+      - yarn test
 
 cache:
   paths:

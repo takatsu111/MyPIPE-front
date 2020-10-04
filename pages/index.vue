@@ -18,11 +18,9 @@
         >
           <v-img :src="movie.thumbNail" width="200px" height="auto"></v-img>
 
-          <v-card-text text--primary
-            ><div class="text--primary">
-              {{ movie.name }}
-            </div></v-card-text
-          >
+          <v-card-text text--primary>
+            <IndexMovieName :movie-name="movie.name" />
+          </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
