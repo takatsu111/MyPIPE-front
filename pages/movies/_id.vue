@@ -1,10 +1,64 @@
 <template>
   <v-container>
-    <video
-      ref="videoPlayer"
-      class="video-js vjs-big-play-centered vjs-16-9"
-      style="margin: auto"
-    ></video>
+    <v-row style="max-width: 1000px" class="mx-auto">
+      <v-col>
+        <video
+          ref="videoPlayer"
+          class="video-js vjs-big-play-centered vjs-16-9 mb-8"
+          style="margin: auto"
+        ></video>
+        <v-form v-model="valid" @submit.prevent="postComment">
+          <v-text-field
+            v-model="comment"
+            name="comment"
+            label="コメントを投稿"
+            required
+          ></v-text-field>
+          <v-btn
+            v-show="postCommentInProgress"
+            width="120px"
+            type="submit"
+            class="mb-8"
+            disabled
+          >
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              :size="20"
+              :width="2"
+            ></v-progress-circular>
+          </v-btn>
+          <v-btn
+            v-show="!postCommentInProgress"
+            width="120px"
+            type="submit"
+            class="mr-4 mb-8"
+            >投稿</v-btn
+          >
+        </v-form>
+        <v-divider></v-divider>
+        <v-list three-line>
+          <template v-for="item in items">
+            <v-list-item :key="item.id">
+              <v-list-item-avatar>
+                <v-img :src="item.avatar"></v-img>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+                <div v-show="!item.commentOpenFlag">
+                  <span>{{ item.body }}</span>
+                </div>
+                <div v-show="item.commentOpenFlag" class="mt-2 mb-2">
+                  {{ item.body }}
+                </div>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider :key="item.id"></v-divider>
+          </template>
+        </v-list>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -35,12 +89,17 @@ export default {
     return {
       player: null,
       movieId: null,
+      items: [],
+      comment: null,
+      postCommentInProgress: false,
     }
   },
-  mounted() {
-    console.log(
-      (this.options.sources[0].src = `http://--------/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`)
-    )
+  async mounted() {
+    const comments = await this.$axios.$get(`/comments/${this.movieId}`)
+    this.items = comments
+
+    this.options.sources[0].src = `http://--------/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
+
     this.player = videojs(
       this.$refs.videoPlayer,
       this.options,
@@ -48,6 +107,43 @@ export default {
         console.log('onPlayerReady', this)
       }
     )
+  },
+  methods: {
+    getElem(e) {
+      console.log(e.currentTarget.clientHeight)
+    },
+    async postComment() {
+      if (this.comment === null) {
+        return
+      }
+
+      this.postCommentInProgress = true
+
+      const data = this
+      const movieId = this.movieId
+      const comment = this.comment
+
+      await this.$axios
+        .$post('/comments', {
+          movie_id: movieId,
+          body: comment,
+        })
+        .then((res) => {
+          this.comment = null
+          const postedComment = {
+            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+            name: 'postCommentTest',
+            body: comment,
+            commentOpenFlag: false,
+          }
+          data.items.unshift(postedComment)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      this.postCommentInProgress = false
+    },
   },
 }
 </script>

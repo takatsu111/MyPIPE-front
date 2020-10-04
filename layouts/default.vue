@@ -27,7 +27,11 @@
 
     <v-app-bar color="#06ACB5" dark app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title color="white">MyPIPE</v-toolbar-title>
+      <v-toolbar-title color="white"
+        ><nuxt-link to="/" style="color: white"
+          >MyPIPE</nuxt-link
+        ></v-toolbar-title
+      >
     </v-app-bar>
 
     <v-main>
@@ -43,11 +47,9 @@ export default {
       menus: [
         { title: 'Top', icon: 'mdi-web', url: '/' },
         { title: 'MyPage', icon: 'mdi-home', url: '/mypage' },
-        // { title: 'Favorites', icon: 'mdi-heart', url: '/favorites' },
-        // { title: 'About', icon: 'mdi-information-variant', url: '/about' },
       ],
       clipped: false,
-      drawer: true,
+      drawer: false,
       fixed: false,
       items: [
         {

@@ -5,8 +5,8 @@
         v-for="movie in movies"
         :key="movie.id"
         cols="12"
-        xl="3"
-        lg="4"
+        xl="2"
+        lg="3"
         md="6"
       >
         <v-card
