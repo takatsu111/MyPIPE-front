@@ -17,7 +17,7 @@ describe('Page', () => {
   test('IndexMovieName', () => {
     const wrapper = shallowMount(IndexMovieName, {
       propsData: {
-        movieName: "MyGreatMovie"
+        movieName: 'MyGreatMovie',
       },
     })
     expect(wrapper.vm.$props.movieName).toBe('MyGreatMovie')
