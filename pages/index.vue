@@ -6,8 +6,8 @@
         :key="movie.id"
         cols="12"
         xl="2"
-        lg="3"
-        md="6"
+        md="4"
+        sm="6"
       >
         <v-card
           class="mx-auto mb-7"
