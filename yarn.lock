@@ -2412,6 +2412,15 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.10.1.tgz#e1e82e4f3e999e2cfd61b161280d16a111f86428"
   integrity sha512-zg7Hz2k5lI8kb7U32998pRRFin7zJlkfezGJjUc2heaD4Pw2wObakCDVzkKztTm/Ln7eiVvYsjqak0Ed4LkMDA==
 
+axios-mock-server@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/axios-mock-server/-/axios-mock-server-0.19.0.tgz#1045f5cc6ab5a13d0bcf5518c34ea7fcc5db1f37"
+  integrity sha512-BCVRQGX7aGCTf973pUGl089ixX7LZmrfc4fCUQXV1dI/QP1lAOevExWHVTrG9dfo29wBYbDRhuw8ANLe1f34uw==
+  dependencies:
+    chokidar "^3.4.2"
+    minimist "^1.2.5"
+    url-search-params-polyfill "^8.1.0"
+
 axios-retry@^3.1.8:
   version "3.1.9"
   resolved "https://registry.yarnpkg.com/axios-retry/-/axios-retry-3.1.9.tgz#6c30fc9aeb4519aebaec758b90ef56fa03fe72e8"
@@ -11606,6 +11615,11 @@ url-loader@^2.3.0:
     loader-utils "^1.2.3"
     mime "^2.4.4"
     schema-utils "^2.5.0"
+
+url-search-params-polyfill@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/url-search-params-polyfill/-/url-search-params-polyfill-8.1.0.tgz#5c15b69687165bfd4f6c7d8a161d70d85385885b"
+  integrity sha512-MRG3vzXyG20BJ2fox50/9ZRoe+2h3RM7DIudVD2u/GY9MtayO1Dkrna76IUOak+uoUPVWbyR0pHCzxctP/eDYQ==
 
 url-toolkit@^2.1.3, url-toolkit@^2.1.6:
   version "2.2.0"

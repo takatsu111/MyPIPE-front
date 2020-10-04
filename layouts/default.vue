@@ -4,7 +4,6 @@
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      :expandOnHover="expandOnHover"
       fixed
       app
     >
@@ -26,14 +25,14 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-content>
-      <header>
-        <v-app-bar color="#06ACB5" dark>
-          <v-toolbar-title color="white">MyPIPE</v-toolbar-title>
-        </v-app-bar>
-      </header>
+    <v-app-bar color="#06ACB5" dark app>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title color="white">MyPIPE</v-toolbar-title>
+    </v-app-bar>
+
+    <v-main>
       <Nuxt />
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
@@ -42,10 +41,10 @@ export default {
   data() {
     return {
       menus: [
-        { title: 'Index', icon: 'mdi-web', url: '/' },
-        { title: 'Home', icon: 'mdi-home', url: '/home' },
-        { title: 'Favorites', icon: 'mdi-heart', url: '/favorites' },
-        { title: 'About', icon: 'mdi-information-variant', url: '/about' },
+        { title: 'Top', icon: 'mdi-web', url: '/' },
+        { title: 'MyPage', icon: 'mdi-home', url: '/mypage' },
+        // { title: 'Favorites', icon: 'mdi-heart', url: '/favorites' },
+        // { title: 'About', icon: 'mdi-information-variant', url: '/about' },
       ],
       clipped: false,
       drawer: true,
