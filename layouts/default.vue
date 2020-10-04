@@ -13,15 +13,38 @@
           <v-list-item-title class="title" height="64">
             Application
           </v-list-item-title>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="drawer = !drawer">
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
         </v-list-item>
-        <v-list-item v-for="menu in menus" :key="menu.title" :to="menu.url">
-          <v-list-item-icon>
-            <v-icon>{{ menu.icon }}</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ menu.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+
+        <v-list-item-grout>
+          <v-list-item to="/">
+            <v-list-item-icon>
+              <v-icon>mdi-web</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>動画一覧</v-list-item-title>
+          </v-list-item>
+          <v-list-item to="/mypage/movies">
+            <v-list-item-icon>
+              <v-icon>mdi-movie-open-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>動画を投稿</v-list-item-title>
+          </v-list-item>
+          <v-list-item to="/mypage/channels">
+            <v-list-item-icon>
+              <v-icon>mdi-playlist-plus</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>登録チャンネル一覧</v-list-item-title>
+          </v-list-item>
+          <v-list-item to="/mypage/movie-lists">
+            <v-list-item-icon>
+              <v-icon>mdi-playlist-play</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>再生リスト一覧</v-list-item-title>
+          </v-list-item>
+        </v-list-item-grout>
       </v-list>
     </v-navigation-drawer>
 
@@ -44,10 +67,7 @@
 export default {
   data() {
     return {
-      menus: [
-        { title: 'Top', icon: 'mdi-web', url: '/' },
-        { title: 'MyPage', icon: 'mdi-home', url: '/mypage' },
-      ],
+      menus: [{ title: 'Top', icon: 'mdi-web', url: '/' }],
       clipped: false,
       drawer: false,
       fixed: false,
