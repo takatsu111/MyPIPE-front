@@ -28,7 +28,7 @@ const myMovies = [
     title: 'Cupcake',
     description: 'forth',
     thumbnail: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-    progress: 0,
+    progress: 1,
     postedDay: '2000/01/01',
   },
   {
@@ -36,7 +36,7 @@ const myMovies = [
     title: 'Gingerbread',
     description: 'fifth',
     thumbnail: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-    progress: 1,
+    progress: 2,
     postedDay: '2000/01/01',
   },
 ]
