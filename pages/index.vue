@@ -11,12 +11,17 @@
       >
         <v-card
           class="mx-auto mb-7"
-          width="200"
+          width="200px"
           link
           nuxt
           :to="'/movies/' + movie.id"
         >
-          <v-img :src="movie.thumbNail" width="200px" height="auto"></v-img>
+          <v-img
+            :src="movie.thumbNail"
+            width="200px"
+            height="112.5px"
+            contain
+          ></v-img>
 
           <v-card-text text--primary>
             <IndexMovieName :movie-name="movie.name" />
