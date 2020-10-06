@@ -68,8 +68,8 @@
           contain
         ></v-img>
       </template>
-      <template v-slot:item.progress="{ item }">
-        <template v-if="item.progress === 0">
+      <template v-slot:item.movie_status="{ item }">
+        <template v-if="item.movie_status === 0">
           <v-progress-circular
             indeterminate
             color="primary"
@@ -79,16 +79,28 @@
           ></v-progress-circular>
           <span>Processing</span>
         </template>
-        <template v-if="item.progress === 1">
-          <v-icon>mdi-check</v-icon>
+        <template v-if="item.movie_status === 1">
+          <v-icon color="green">mdi-check</v-icon>
           <span>Complete</span>
+        </template>
+        <template v-if="item.movie_status === 2">
+          <v-icon color="red">mdi-close</v-icon>
+          <span>Error</span>
+        </template>
+      </template>
+      <template v-slot:item.movie_public="{ item }">
+        <template v-if="item.movie_public === 0">
+          <v-chip dark> 非公開 </v-chip>
+        </template>
+        <template v-else>
+          <v-chip color="#06ACB5" dark> 公開 </v-chip>
         </template>
       </template>
       <template v-slot:item.action="{ item }">
         <v-btn
           class="mr-2"
           color="primary"
-          @click="openEditModal(item.id, item.title, item.description)"
+          @click="openEditModal(item.id, item.movie_name, item.description)"
         >
           編集
         </v-btn>
@@ -168,32 +180,43 @@ export default {
         {
           text: 'タイトル',
           align: 'start',
-          sortable: false,
-          value: 'title',
+          sortable: true,
+          value: 'movie_name',
         },
-        { text: '概要', value: 'description' },
         { text: '操作', value: 'action' },
-        { text: '進行状況', value: 'progress' },
-        { text: '投稿日', value: 'postedDay' },
+        { text: '進行状況', value: 'movie_status' },
+        { text: '概要', value: 'movie_description' },
+        { text: '公開/非公開', value: 'movie_public' },
+        { text: '投稿日', value: 'movie_created_at' },
       ],
       movies: [],
     }
   },
   async mounted() {
-    const movies = await this.$axios.$get('/mymovies')
-    console.log(movies)
-    this.movies = movies
+    await this.getMovies()
   },
   created() {
     const data = this
     const countup = function () {
-      data.$axios.$get('/mymovies').then((res) => {
-        data.movies = res
-      })
+      data.getMovies()
     }
     setInterval(countup, 5000)
   },
   methods: {
+    async getMovies() {
+      const config = {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDIwMjA3OTIsImlkIjoxMDEyLCJvcmlnX2lhdCI6MTYwMjAxNzE5Mn0.d8elVvb4zuwC6L1jD3xie8T9m4w5929R5IyiK2mB-LY',
+        },
+      }
+      const movies = await this.$axios.$get(
+        'http://localhost/auth/api/v1/movies',
+        config
+      )
+      console.log(movies)
+      this.movies = JSON.parse(movies)
+    },
     openEditModal(id, title, description) {
       this.editMovieId = id
       this.editMovieTitle = title
@@ -213,17 +236,18 @@ export default {
     async uploadNewMovie() {
       this.newDialogButtonEnable = false
       const formData = new FormData()
-      formData.append('upload_movie', this.newMovieFile)
-      formData.append('upload_thumbnail', this.newMovieThumbnail)
+      formData.append('uploadMovie', this.newMovieFile)
+      formData.append('uploadThumbnail', this.newMovieThumbnail)
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
+          Authorization: 'Bearer xxxxx',
         },
       }
 
       const data = this
       await this.$axios
-        .$post('/mymovies', formData, config)
+        .$post('http://localhost/auth/api/v1/movie', formData, config)
         .then(function (response) {
           console.log(response)
           data.newDialog = false
@@ -233,6 +257,7 @@ export default {
           data.editMovieDescription = response.description
         })
         .catch(function (error) {
+          console.log('||||')
           console.log(error)
         })
 
