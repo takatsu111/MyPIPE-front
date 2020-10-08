@@ -63,13 +63,17 @@
       class="elevation-1"
     >
       <template v-slot:item.thumbnail="{ item }">
-        <p style="display: none">{{ item.thumbnail }}</p>
         <v-img
           width="200px"
           height="120px"
-          :src="item.thumbnail"
+          :src="
+            'http://-----/thumbnails/' +
+            item.movie_id +
+            item.movie_thumbnail_name
+          "
           contain
         ></v-img>
+        <v-btn class="mb-5">サムネイルを変更する</v-btn>
       </template>
       <template v-slot:item.movie_name="{ item }">
         <v-btn
