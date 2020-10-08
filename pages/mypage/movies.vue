@@ -281,6 +281,16 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="errorMessageDialogOpen" max-width="400px" persistent>
+      <v-card>
+        <v-icon large @click="errorMessageDialogOpen = false">
+          mdi-close
+        </v-icon>
+        <div>
+          {{ errorMessage }}
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -337,7 +347,7 @@ export default {
     async getMovies() {
       const config = {
         headers: {
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxxxx',
         },
       }
       const movies = await this.$axios.$get(
@@ -412,7 +422,7 @@ export default {
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxxxx',
         },
       }
 
@@ -445,7 +455,7 @@ export default {
       }
       const config = {
         headers: {
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxxxx',
         },
       }
       const data = this
