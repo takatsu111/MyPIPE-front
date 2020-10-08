@@ -128,9 +128,35 @@
       <template v-slot:item.movie_public="{ item }">
         <template v-if="item.movie_public === 0">
           <v-chip dark> 非公開 </v-chip>
+          <v-btn
+            @click="
+              openChangePublicDialog(
+                item.movie_id,
+                item.movie_name,
+                item.movie_description,
+                item.movie_public,
+                item.movie_status
+              )
+            "
+          >
+            公開する
+          </v-btn>
         </template>
         <template v-else>
           <v-chip color="#06ACB5" dark> 公開 </v-chip>
+          <v-btn
+            @click="
+              openChangePublicDialog(
+                item.movie_id,
+                item.movie_name,
+                item.movie_description,
+                item.movie_public,
+                item.movie_status
+              )
+            "
+          >
+            非公開にする
+          </v-btn>
         </template>
       </template>
       <template v-slot:item.action="{ item }">
@@ -214,15 +240,40 @@
           lazy-validation
           @submit.prevent
         >
-          <v-text-field
+          <v-textarea
             v-model="editMovieDescription"
             label="概要"
             required
             clearable
-          ></v-text-field>
+          ></v-textarea>
           <v-btn v-if="editDialogButtonEnable" @click="editMovieInfo">
             編集完了
           </v-btn>
+        </v-form>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="editPublicDialog" max-width="400px" persistent>
+      <v-card>
+        <v-icon large @click="editPublicDialog = false"> mdi-close </v-icon>
+        <v-form
+          ref="form"
+          v-model="valid"
+          class="px-15 py-5"
+          lazy-validation
+          @submit.prevent
+        >
+          <template v-if="editMoviePublic === 0">
+            <div class="mb-5">動画を非公開にしますか?</div>
+            <v-btn v-if="editDialogButtonEnable" @click="editMovieInfo">
+              非公開にする
+            </v-btn>
+          </template>
+          <template v-if="editMoviePublic === 1">
+            <div>動画を公開しますか?</div>
+            <v-btn v-if="editDialogButtonEnable" @click="editMovieInfo">
+              公開する
+            </v-btn>
+          </template>
         </v-form>
       </v-card>
     </v-dialog>
@@ -232,6 +283,8 @@
 export default {
   data() {
     return {
+      errorMessageDialogOpen: false,
+      errorMessage: null,
       newMovieTitle: null,
       newMovieDescription: null,
       newMovieFile: null,
@@ -313,10 +366,27 @@ export default {
       this.editDescriptionDialog = true
     },
     openChangePublicDialog(id, title, description, publicStatus, status) {
+      if (title === '') {
+        this.errorMessage = '動画タイトルを設定してください。'
+        this.errorMessageDialogOpen = true
+        return
+      }
+      if (status !== 1) {
+        this.errorMessage =
+          '進捗状況が「Complete」ではない動画は公開できません。'
+        this.errorMessageDialogOpen = true
+        return
+      }
       this.editMovieId = id
       this.editMovieDescription = description
       this.editMovieTitle = title
-      this.editMoviePublic = publicStatus
+      if (publicStatus === 0) {
+        this.editMoviePublic = 1
+      }
+      if (publicStatus === 1) {
+        this.editMoviePublic = 0
+      }
+
       this.editMovieStatus = status
       this.editPublicDialog = true
     },
@@ -382,6 +452,7 @@ export default {
           data.editDialog = false
           data.editTitleDialog = false
           data.editDescriptionDialog = false
+          data.editPublicDialog = false
           data.getMovies()
         })
         .catch(function (error) {
