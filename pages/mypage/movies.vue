@@ -58,8 +58,6 @@
       :headers="headers"
       :items="movies"
       :items-per-page="5"
-      :sort-by="['movie_created_at']"
-      :sort-desc="[true]"
       class="elevation-1"
     >
       <template v-slot:item.thumbnail="{ item }">
@@ -67,13 +65,25 @@
           width="200px"
           height="120px"
           :src="
-            'http://-----/thumbnails/' +
+            'http://d100q3wt0wdr5h.cloudfront.net/thumbnails/' +
             item.movie_id +
             item.movie_thumbnail_name
           "
           contain
         ></v-img>
-        <v-btn class="mb-5">サムネイルを変更する</v-btn>
+        <v-btn
+          class="mb-5"
+          @click="
+            openChangeThumbnailDialog(
+              item.movie_id,
+              item.movie_name,
+              item.movie_description,
+              item.movie_public,
+              item.movie_status
+            )
+          "
+          >サムネイルを変更する</v-btn
+        >
       </template>
       <template v-slot:item.movie_name="{ item }">
         <v-btn
@@ -281,14 +291,55 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="errorMessageDialogOpen" max-width="400px" persistent>
+    <v-dialog v-model="editMovieThumbnailDialog" width="1000px" persistent>
       <v-card>
-        <v-icon large @click="errorMessageDialogOpen = false">
+        <v-icon large @click="editMovieThumbnailDialog = false">
           mdi-close
         </v-icon>
-        <div>
+        <v-form
+          ref="form"
+          v-model="valid"
+          class="px-15 py-5"
+          lazy-validation
+          @submit.prevent
+        >
+          <v-file-input
+            v-model="editMovieThumbnail"
+            accept="image/*"
+            label="サムネイルを選択"
+            name="editThumbnail"
+            @change="previewEditMovieThumbnail"
+          ></v-file-input>
+          <v-img
+            width="160px"
+            :height="editMovieThumbnailUrl === null ? 0 : '90px'"
+            :src="editMovieThumbnailUrl"
+            class="mb-4"
+            contain
+          ></v-img>
+
+          <v-btn v-if="editDialogButtonEnable" @click="uploadEditThumbnail">
+            変更する
+          </v-btn>
+          <v-progress-circular
+            v-else
+            indeterminate
+            color="primary"
+            :size="20"
+            :width="2"
+            class="mr-2"
+          ></v-progress-circular>
+        </v-form>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="errorMessageDialogOpen" max-width="800px" persistent>
+      <v-card class="pa-5 text-center">
+        <div class="mb-5">
           {{ errorMessage }}
         </div>
+        <v-btn class="mx-auto" @click="errorMessageDialogOpen = false"
+          >戻る</v-btn
+        >
       </v-card>
     </v-dialog>
   </div>
@@ -310,6 +361,7 @@ export default {
       editMovieTitle: null,
       editMovieDescription: null,
       editMoviePublic: null,
+      editMovieThumbnailDialog: false,
       editMovieThumbnail: null,
       editDialog: false,
       editTitleDialog: false,
@@ -321,8 +373,6 @@ export default {
         { text: 'サムネイル', value: 'thumbnail' },
         {
           text: 'タイトル',
-          align: 'start',
-          sortable: true,
           value: 'movie_name',
         },
         { text: '概要', value: 'movie_description' },
@@ -347,14 +397,14 @@ export default {
     async getMovies() {
       const config = {
         headers: {
-          Authorization: 'Bearer xxxxx',
+          Authorization: 'Bearer xxxx',
+          'Access-Control-Allow-Origin': 'http://localhost:3000',
         },
       }
       const movies = await this.$axios.$get(
         'http://localhost/auth/api/v1/movies',
         config
       )
-      console.log(movies)
       this.movies = JSON.parse(movies)
     },
     openEditModal(id, title, description) {
@@ -378,6 +428,14 @@ export default {
       this.editMoviePublic = publicStatus
       this.editMovieStatus = status
       this.editDescriptionDialog = true
+    },
+    openChangeThumbnailDialog(id, title, description, publicStatus, status) {
+      this.editMovieId = id
+      this.editMovieDescription = description
+      this.editMovieTitle = title
+      this.editMoviePublic = publicStatus
+      this.editMovieStatus = status
+      this.editMovieThumbnailDialog = true
     },
     openChangePublicDialog(id, title, description, publicStatus, status) {
       if (title === '') {
@@ -414,6 +472,18 @@ export default {
         this.newMovieThumbnailUrl = null
       }
     },
+    previewEditMovieThumbnail() {
+      if (
+        this.editMovieThumbnail !== null &&
+        this.editMovieThumbnail !== undefined
+      ) {
+        this.editMovieThumbnailUrl = URL.createObjectURL(
+          this.editMovieThumbnail
+        )
+      } else {
+        this.editMovieThumbnailUrl = null
+      }
+    },
     async uploadNewMovie() {
       this.newDialogButtonEnable = false
       const formData = new FormData()
@@ -422,7 +492,13 @@ export default {
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
-          Authorization: 'Bearer xxxxx',
+          Authorization: 'Bearer xxxx',
+        },
+        onUploadProgress: (progressEvent) => {
+          console.log(progressEvent.loaded)
+          console.log(
+            Math.floor((progressEvent.loaded * 100) / progressEvent.total) + '%'
+          )
         },
       }
 
@@ -430,12 +506,14 @@ export default {
       await this.$axios
         .$post('http://localhost/auth/api/v1/movie', formData, config)
         .then(function (response) {
-          console.log(response.result)
+          const jsonResponseData = JSON.parse(response)
           data.newDialog = false
           data.editDialog = true
-          data.editMovieId = response.id
-          data.editMovieTitle = response.title
-          data.editMovieDescription = response.description
+          data.editMovieId = jsonResponseData.id
+          data.editMovieTitle = jsonResponseData.title
+          data.editMovieDescription = jsonResponseData.description
+          data.editMoviePublic = 0
+          data.editMovieStatus = 0
           data.getMovies()
         })
         .catch(function (error) {
@@ -443,6 +521,36 @@ export default {
         })
 
       this.newDialogButtonEnable = true
+    },
+    async uploadEditThumbnail() {
+      this.editDialogButtonEnable = false
+      const formData = new FormData()
+      formData.append('uploadThumbnail', this.editMovieThumbnail)
+      formData.append('movie_id', this.editMovieId)
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+          Authorization: 'Bearer xxxx',
+        },
+        onUploadProgress: (progressEvent) => {
+          console.log(progressEvent.loaded)
+          console.log(
+            Math.floor((progressEvent.loaded * 100) / progressEvent.total) + '%'
+          )
+        },
+      }
+
+      const data = this
+      await this.$axios
+        .$put('http://localhost/auth/api/v1/thumbnail', formData, config)
+        .then(function (response) {
+          data.getMovies()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+      this.editMovieThumbnailDialog = false
+      this.editDialogButtonEnable = true
     },
     async editMovieInfo() {
       this.editDialogButtonEnable = false
@@ -455,14 +563,13 @@ export default {
       }
       const config = {
         headers: {
-          Authorization: 'Bearer xxxxx',
+          Authorization: 'Bearer xxxx',
         },
       }
       const data = this
       await this.$axios
         .$put('http://localhost/auth/api/v1/movie', requestData, config)
         .then(function (response) {
-          console.log(response)
           data.editDialog = false
           data.editTitleDialog = false
           data.editDescriptionDialog = false
