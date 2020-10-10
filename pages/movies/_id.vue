@@ -43,17 +43,17 @@
         <v-divider></v-divider>
         <v-list three-line>
           <template v-for="comment in comments">
-            <v-list-item :key="comment.id">
+            <v-list-item :key="comment.comment_id">
               <v-list-item-avatar>
                 <v-img :src="comment.avatar"></v-img>
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>{{ comment.name }}</v-list-item-title>
-                <span>{{ comment.body }}</span>
+                <v-list-item-title>{{ comment.user_name }}</v-list-item-title>
+                <span>{{ comment.comment_body }}</span>
               </v-list-item-content>
             </v-list-item>
-            <v-divider :key="comment.id"></v-divider>
+            <v-divider :key="comment.comment_id"></v-divider>
           </template>
         </v-list>
       </v-col>
@@ -94,19 +94,26 @@ export default {
     }
   },
   async mounted() {
-    this.comments = await this.$axios.$get(`/comments/${this.movieId}`)
-
-    this.options.sources[0].src = `http://--------/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
-
-    this.player = videojs(
-      this.$refs.videoPlayer,
-      this.options,
-      function onPlayerReady() {
-        console.log('onPlayerReady', this)
-      }
-    )
+    await this.getComments()
   },
   methods: {
+    async getComments() {
+      this.comments = JSON.parse(
+        await this.$axios.$get(
+          `http://localhost/comments?movie_id=${this.movieId}`
+        )
+      )
+
+      this.options.sources[0].src = `http://--------/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
+
+      this.player = videojs(
+        this.$refs.videoPlayer,
+        this.options,
+        function onPlayerReady() {
+          console.log('onPlayerReady', this)
+        }
+      )
+    },
     async postComment() {
       if (this.comment === null) {
         return
@@ -133,13 +140,7 @@ export default {
           config
         )
         .then((res) => {
-          this.comment = null
-          const postedComment = {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-            name: 'postCommentTest',
-            body: comment,
-          }
-          data.items.unshift(postedComment)
+          data.getComments()
         })
         .catch((error) => {
           console.log(error)
