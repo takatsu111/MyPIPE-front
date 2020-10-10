@@ -87,12 +87,11 @@ export default {
     },
   },
   asyncData(context) {
-    return { movieId: context.params.id }
+    return { movieId: parseInt(context.params.id) }
   },
   data() {
     return {
       player: null,
-      movieId: null,
       items: [],
       comment: null,
       postCommentInProgress: false,
@@ -125,12 +124,20 @@ export default {
       const data = this
       const movieId = this.movieId
       const comment = this.comment
-
+      const config = {
+        headers: {
+          Authorization: 'Bearer xxxx',
+        },
+      }
       await this.$axios
-        .$post('/comments', {
-          movie_id: movieId,
-          body: comment,
-        })
+        .$post(
+          'http://localhost/auth/api/v1/comments',
+          {
+            movie_id: movieId,
+            comment_body: comment,
+          },
+          config
+        )
         .then((res) => {
           this.comment = null
           const postedComment = {
