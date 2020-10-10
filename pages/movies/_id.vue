@@ -126,8 +126,7 @@ export default {
       const comment = this.comment
       const config = {
         headers: {
-          Authorization:
-            'Bearer xxxx',
+          Authorization: 'Bearer xxxx',
         },
       }
       await this.$axios
