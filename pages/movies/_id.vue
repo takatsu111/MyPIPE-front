@@ -42,23 +42,18 @@
         </v-form>
         <v-divider></v-divider>
         <v-list three-line>
-          <template v-for="item in items">
-            <v-list-item :key="item.id">
+          <template v-for="comment in comments">
+            <v-list-item :key="comment.id">
               <v-list-item-avatar>
-                <v-img :src="item.avatar"></v-img>
+                <v-img :src="comment.avatar"></v-img>
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>{{ item.name }}</v-list-item-title>
-                <div v-show="!item.commentOpenFlag">
-                  <span>{{ item.body }}</span>
-                </div>
-                <div v-show="item.commentOpenFlag" class="mt-2 mb-2">
-                  {{ item.body }}
-                </div>
+                <v-list-item-title>{{ comment.name }}</v-list-item-title>
+                <span>{{ comment.body }}</span>
               </v-list-item-content>
             </v-list-item>
-            <v-divider :key="item.id"></v-divider>
+            <v-divider :key="comment.id"></v-divider>
           </template>
         </v-list>
       </v-col>
@@ -92,15 +87,14 @@ export default {
   data() {
     return {
       player: null,
-      items: [],
+      comments: [],
       comment: null,
       postCommentInProgress: false,
       postCommentError: false,
     }
   },
   async mounted() {
-    const comments = await this.$axios.$get(`/comments/${this.movieId}`)
-    this.items = comments
+    this.comments = await this.$axios.$get(`/comments/${this.movieId}`)
 
     this.options.sources[0].src = `http://--------/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
 
@@ -144,7 +138,6 @@ export default {
             avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
             name: 'postCommentTest',
             body: comment,
-            commentOpenFlag: false,
           }
           data.items.unshift(postedComment)
         })
