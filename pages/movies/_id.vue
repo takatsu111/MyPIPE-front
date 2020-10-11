@@ -148,7 +148,7 @@ export default {
     async getMovieAndComments() {
       const movieAndComments = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/comments?movie_id=${this.movieId}`
+          `http://localhost/auth/api/v1/movie-and-comments?movie_id=${this.movieId}`
         )
       )
 
@@ -179,8 +179,7 @@ export default {
       const comment = this.comment
       const config = {
         headers: {
-          Authorization:
-            'Bearer xxx',
+          Authorization: 'Bearer xxx',
         },
       }
       await this.$axios
