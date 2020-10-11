@@ -1,12 +1,47 @@
 <template>
-  <v-container>
-    <v-row style="max-width: 1000px" class="mx-auto">
+  <v-container style="max-width: 1000px">
+    <v-row>
+      <v-col>
+        <h2 v-if="movie !== null">
+          {{ movie.DisplayName }}
+        </h2>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <video
           ref="videoPlayer"
-          class="video-js vjs-big-play-centered vjs-16-9 mb-8"
-          style="margin: auto"
+          class="video-js vjs-big-play-centered vjs-16-9"
         ></video>
+      </v-col>
+    </v-row>
+    <v-row v-if="movie !== null" style="min-height: 3em">
+      <v-col>
+        <v-img
+          width="100px"
+          height="100px"
+          class="mx-auto"
+          src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
+        ></v-img>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col v-if="movie !== null" class="text-center">
+        <h2>{{ userPostedMovie.DisplayName }}aaaaa</h2>
+      </v-col>
+    </v-row>
+    <v-row class="mb-10">
+      <v-expansion-panels accordion>
+        <v-expansion-panel>
+          <v-expansion-panel-header>動画の説明を見る</v-expansion-panel-header>
+          <v-expansion-panel-content v-if="movie !== null">
+            {{ movie.Description }}
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-form v-model="valid" @submit.prevent="postComment">
           <v-text-field
             v-model="comment"
@@ -45,12 +80,23 @@
           <template v-for="comment in comments">
             <v-list-item :key="comment.comment_id">
               <v-list-item-avatar>
-                <v-img :src="comment.avatar"></v-img>
+                <v-img
+                  src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
+                ></v-img>
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>{{ comment.user_name }}</v-list-item-title>
-                <span>{{ comment.comment_body }}</span>
+                <div>
+                  <div class="mb-5">
+                    <span
+                      class="d-inline-block px-2 py-1 rounded"
+                      style="background-color: rgba(0, 0, 0, 0.15)"
+                    >
+                      {{ comment.user_name }}
+                    </span>
+                  </div>
+                  <div>{{ comment.comment_body }}</div>
+                </div>
               </v-list-item-content>
             </v-list-item>
             <v-divider :key="comment.comment_id"></v-divider>
@@ -88,21 +134,27 @@ export default {
     return {
       player: null,
       comments: [],
+      movie: null,
+      userPostedMovie: null,
       comment: null,
       postCommentInProgress: false,
       postCommentError: false,
     }
   },
   async mounted() {
-    await this.getComments()
+    await this.getMovieAndComments()
   },
   methods: {
-    async getComments() {
-      this.comments = JSON.parse(
+    async getMovieAndComments() {
+      const movieAndComments = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/comments?movie_id=${this.movieId}`
+          `http://localhost/auth/api/v1/movie-and-comments?movie_id=${this.movieId}`
         )
       )
+
+      this.comments = movieAndComments.comments
+      this.movie = movieAndComments.movie
+      this.userPostedMovie = movieAndComments.posted_user
 
       this.options.sources[0].src = `http://--------/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
 
@@ -127,7 +179,7 @@ export default {
       const comment = this.comment
       const config = {
         headers: {
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxx',
         },
       }
       await this.$axios
@@ -140,7 +192,8 @@ export default {
           config
         )
         .then((res) => {
-          data.getComments()
+          data.getMovieAndComments()
+          data.comment = null
         })
         .catch((error) => {
           console.log(error)
