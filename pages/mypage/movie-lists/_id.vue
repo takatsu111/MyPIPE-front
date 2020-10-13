@@ -118,8 +118,7 @@ export default {
   async mounted() {
     const config = {
       headers: {
-        Authorization:
-          'Bearer xxxx',
+        Authorization: 'Bearer xxxx',
       },
     }
     const responseData = JSON.parse(

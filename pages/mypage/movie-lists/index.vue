@@ -104,8 +104,7 @@ export default {
     async getPlayLists() {
       const config = {
         headers: {
-          Authorization:
-            'Bearer xxxx',
+          Authorization: 'Bearer xxxx',
         },
       }
       const responseData = JSON.parse(
@@ -121,8 +120,7 @@ export default {
     async createPlayLists() {
       const config = {
         headers: {
-          Authorization:
-            'Bearer xxxx',
+          Authorization: 'Bearer xxxx',
         },
       }
 
