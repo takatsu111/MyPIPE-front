@@ -397,7 +397,7 @@ export default {
     async getMovies() {
       const config = {
         headers: {
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxx',
           'Access-Control-Allow-Origin': 'http://localhost:3000',
         },
       }
@@ -492,7 +492,7 @@ export default {
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxx',
         },
         onUploadProgress: (progressEvent) => {
           console.log(progressEvent.loaded)
@@ -530,7 +530,7 @@ export default {
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxx',
         },
         onUploadProgress: (progressEvent) => {
           console.log(progressEvent.loaded)
@@ -563,7 +563,7 @@ export default {
       }
       const config = {
         headers: {
-          Authorization: 'Bearer xxxx',
+          Authorization: 'Bearer xxx',
         },
       }
       const data = this

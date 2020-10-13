@@ -148,7 +148,7 @@ export default {
     async getMovieAndComments() {
       const movieAndComments = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/auth/api/v1/movie-and-comments?movie_id=${this.movieId}`
+          `http://localhost/api/v1/movie-and-comments?movie_id=${this.movieId}`
         )
       )
 

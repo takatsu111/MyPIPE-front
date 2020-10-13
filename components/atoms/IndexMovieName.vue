@@ -1,5 +1,8 @@
 <template>
-  <div class="text--primary">
+  <div
+    class="text--primary"
+    style="height: 5em; overflow: hidden; line-height: 1em"
+  >
     {{ movieName }}
   </div>
 </template>
