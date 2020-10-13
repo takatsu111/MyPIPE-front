@@ -105,7 +105,7 @@ export default {
       const config = {
         headers: {
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDI1NDkxODUsImlkIjoxMDEyLCJvcmlnX2lhdCI6MTYwMjU0NTU4NX0.OacB6vHcWQTTFhesIkoZfEYgne-wKgGgBbrjY2dKXeo',
+            'Bearer xxxx',
         },
       }
       const responseData = JSON.parse(
@@ -122,7 +122,7 @@ export default {
       const config = {
         headers: {
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDI1NDkxODUsImlkIjoxMDEyLCJvcmlnX2lhdCI6MTYwMjU0NTU4NX0.OacB6vHcWQTTFhesIkoZfEYgne-wKgGgBbrjY2dKXeo',
+            'Bearer xxxx',
         },
       }
 
