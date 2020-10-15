@@ -65,7 +65,7 @@
           <v-row style="height: 100%">
             <v-col cols="4" class="py-1" style="height: 100%">
               <v-img
-                :src="`http://----/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
+                src="https://www.pakutaso.com/shared/img/thumb/gamerIMGL9105_TP_V.jpg"
                 width="100%"
                 height="100%"
                 aspect-ratio="1.77"

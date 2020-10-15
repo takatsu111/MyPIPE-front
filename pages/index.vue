@@ -52,11 +52,7 @@
               </v-list-item-avatar>
 
               <v-list-item-content style="min-width: 50%; max-width: 50%">
-                <v-list-item-title
-                  >{{
-                    movie.user_name
-                  }}eeeeeeeeeeeeekkkkkkkkkkkkk</v-list-item-title
-                >
+                <v-list-item-title>{{ movie.user_name }}</v-list-item-title>
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-menu offset-y>
@@ -73,7 +69,12 @@
                   </v-btn>
                 </template>
                 <v-list dense>
-                  <v-list-item v-for="(item, i) in items" :key="i" link>
+                  <v-list-item
+                    v-for="(item, i) in items"
+                    :key="i"
+                    link
+                    @click="openAddPlayListMovieDialog(movie.movie_id)"
+                  >
                     <v-list-item-icon>
                       <v-icon v-text="item.icon"></v-icon>
                     </v-list-item-icon>
@@ -100,6 +101,62 @@
         </v-container>
       </v-col>
     </v-row>
+    <v-dialog
+      v-model="playListDialog"
+      width="100%"
+      max-width="500px"
+      style="background: white; position: relative"
+      persistent
+      scrollable
+    >
+      <v-card style="background: white; position: relative" height="100%">
+        <v-card-title>再生リストに追加</v-card-title>
+        <v-divider></v-divider>
+        <v-btn
+          icon
+          style="position: absolute; right: 10px; top: 10px"
+          @click="closeAddPlayListMovieDialog"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-list width="=100%" max-width="100%">
+          <v-list-item
+            v-for="playList in playLists"
+            :key="playList.play_list_id"
+            style="width: 100%"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{
+                playList.play_list_name
+              }}</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-btn
+                v-if="playList.play_list_movies.length == 0"
+                color="primary"
+                :disabled="playListMovieModifing"
+                :loading="playListMovieModifing"
+                @click="addPlayListMovie(playList.play_list_id)"
+                >再生リストに追加する</v-btn
+              >
+              <v-btn
+                v-else
+                color="error"
+                :disabled="playListMovieModifing"
+                :loading="playListMovieModifing"
+                @click="
+                  deletePlayListMovie(
+                    playList.play_list_id,
+                    playList.play_list_movies[0].movie_id
+                  )
+                "
+                >再生リストから削除する</v-btn
+              >
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -121,6 +178,10 @@ export default {
       count: null,
       items: [{ text: '再生リストに追加', icon: 'mdi-playlist-play' }],
       show: false,
+      playListDialog: false,
+      playLists: [],
+      playListMovieModifing: false,
+      menuClickedMovieId: null,
     }
   },
   computed: {
@@ -155,6 +216,76 @@ export default {
       this.$router.push(`?page=${this.page}&keyWord=${this.keyWord}`)
       await this.getMovies()
       this.paginationShow = true
+    },
+    async getPlayLists(movieId) {
+      const config = {
+        headers: {
+          Authorization: 'Bearer xxxx',
+        },
+      }
+      const responseData = JSON.parse(
+        await this.$axios.$get(
+          `http://localhost/auth/api/v1/play-lists/${movieId}`,
+          config
+        )
+      )
+
+      this.playLists = responseData.play_lists
+    },
+    async openAddPlayListMovieDialog(movieId) {
+      this.playListDialog = true
+      this.menuClickedMovieId = movieId
+      await this.getPlayLists(movieId)
+    },
+    closeAddPlayListMovieDialog() {
+      this.playListDialog = false
+      this.playLists = []
+    },
+    async addPlayListMovie(playListId) {
+      console.log('ADD')
+      this.playListMovieModifing = true
+      const config = {
+        headers: {
+          Authorization: 'Bearer xxxx',
+        },
+      }
+
+      const movieId = this.menuClickedMovieId
+      const params = {
+        play_list_id: playListId,
+        movie_id: movieId,
+      }
+      await this.$axios
+        .$post(`http://localhost/auth/api/v1/play-list-items`, params, config)
+        .then(() => {
+          console.log('OK')
+          this.getPlayLists(movieId)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      this.playListMovieModifing = false
+    },
+    async deletePlayListMovie(playListId, movieId) {
+      this.playListMovieModifing = true
+      const config = {
+        headers: {
+          Authorization: 'Bearer xxxx',
+        },
+      }
+      await this.$axios
+        .$delete(
+          `http://localhost/auth/api/v1/play-list-items?play_list_id=${playListId}&movie_id=${movieId}`,
+          config
+        )
+        .then(() => {
+          console.log('OK')
+          this.getPlayLists(movieId)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      this.playListMovieModifing = false
     },
   },
 }
