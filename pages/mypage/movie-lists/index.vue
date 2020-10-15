@@ -102,28 +102,14 @@ export default {
   },
   methods: {
     async getPlayLists() {
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxxx',
-        },
-      }
       const responseData = JSON.parse(
-        await this.$axios.$get(
-          'http://localhost/auth/api/v1/play-lists',
-          config
-        )
+        await this.$axios.$get('http://localhost/auth/api/v1/play-lists')
       )
 
       this.playLists = responseData.play_lists
       this.count = responseData.play_lists_count
     },
     async createPlayLists() {
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxxx',
-        },
-      }
-
       const requestData = {
         play_list_name: this.newPlayListName,
         play_list_description: this.newPlayListDescription,
@@ -132,7 +118,7 @@ export default {
       const that = this
 
       await this.$axios
-        .$post('http://localhost/auth/api/v1/play-lists', requestData, config)
+        .$post('http://localhost/auth/api/v1/play-lists', requestData)
         .then((response) => {
           this.createPlayListDialog = false
           this.completeCreatePlayListNotification = true

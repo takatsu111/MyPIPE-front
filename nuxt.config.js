@@ -20,7 +20,7 @@ export default {
   css: ['@/node_modules/video.js/dist/video-js.css', '@/assets/scss/app.scss'],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: ['@/plugins/mock'],
+  plugins: ['@/plugins/mock', { src: '~/plugins/axios.js', ssr: false }],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -40,7 +40,30 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/auth',
   ],
+
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: false,
+      home: '/',
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: 'http://localhost/login',
+            method: 'post',
+            propertyName: 'token',
+          },
+          logout: false,
+          user: false,
+        },
+      },
+    },
+  },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},

@@ -61,6 +61,17 @@
           class="mx-auto px-4"
           style="background: #f2f2f2; position: relative"
         >
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            small
+            color="pink"
+            style="position: absolute; top: 8px; right: 0"
+            @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
+          >
+            <v-icon dark> mdi-close </v-icon>
+          </v-btn>
           <v-row style="height: 100%">
             <v-col cols="4" class="py-1" style="height: 100%">
               <v-img
@@ -88,6 +99,23 @@
         </v-sheet>
       </v-col>
     </draggable>
+    <v-dialog
+      v-model="confirmDeletePlayListMovies"
+      persistent
+      max-width="300px"
+    >
+      <v-card class="px-12 py-8">
+        <div class="text-center mb-5">削除しますか？</div>
+        <v-card-actions>
+          <span style="display: inline-block" class="mx-auto">
+            <v-btn text @click="deletePlayListMovie"> はい </v-btn>
+            <v-btn text @click="confirmDeletePlayListMovies = false">
+              いいえ
+            </v-btn>
+          </span>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -108,26 +136,27 @@ export default {
       initialplaylistMovies: [],
       playList: null,
       playListId: null,
+      deleteMovieId: null,
       playListMoviesOrderChanged: false,
+      confirmDeletePlayListMovies: false,
     }
   },
   async mounted() {
-    const config = {
-      headers: {
-        Authorization: 'Bearer xxxx',
-      },
-    }
-    const responseData = JSON.parse(
-      await this.$axios.$get(
-        `http://localhost/auth/api/v1/play-list-items/${this.playListId}`,
-        config
-      )
-    )
-    this.playListMovies = responseData.play_list_movies
-    this.initialplaylistMovies = this.playListMovies
-    this.playList = responseData.play_list
+    await this.getPlayListMovies()
   },
   methods: {
+    async getPlayListMovies() {
+      const responseData = JSON.parse(
+        await this.$axios.$get(
+          `http://localhost/auth/api/v1/play-list-items/${this.playListId}`
+        )
+      )
+      if (responseData !== null) {
+        this.playListMovies = responseData.play_list_movies
+        this.initialplaylistMovies = this.playListMovies
+        this.playList = responseData.play_list
+      }
+    },
     updatePlayListMoviesOrder() {
       this.playListMovies = this.playListMovies.map((value, index, array) => {
         value.order = index + 1
@@ -147,6 +176,23 @@ export default {
     resetPlayListMoviesOrder() {
       this.playListMovies = this.initialplaylistMovies
       this.playListMoviesOrderChanged = false
+    },
+    openDeletePlayListMovieDialog(movieId) {
+      this.deleteMovieId = movieId
+      this.confirmDeletePlayListMovies = true
+    },
+    async deletePlayListMovie() {
+      await this.$axios
+        .$delete(
+          `http://localhost/auth/api/v1/play-list-items?play_list_id=${this.playListId}&movie_id=${this.deleteMovieId}`
+        )
+        .then(() => {
+          this.getPlayListMovies()
+          this.confirmDeletePlayListMovies = false
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
   },
 }

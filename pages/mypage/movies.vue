@@ -395,15 +395,8 @@ export default {
   },
   methods: {
     async getMovies() {
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxx',
-          'Access-Control-Allow-Origin': 'http://localhost:3000',
-        },
-      }
       const movies = await this.$axios.$get(
-        'http://localhost/auth/api/v1/movies',
-        config
+        'http://localhost/auth/api/v1/movies'
       )
       this.movies = JSON.parse(movies)
     },
@@ -492,7 +485,6 @@ export default {
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
-          Authorization: 'Bearer xxx',
         },
         onUploadProgress: (progressEvent) => {
           console.log(progressEvent.loaded)
@@ -530,7 +522,6 @@ export default {
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
-          Authorization: 'Bearer xxx',
         },
         onUploadProgress: (progressEvent) => {
           console.log(progressEvent.loaded)
@@ -561,14 +552,9 @@ export default {
         public: this.editMoviePublic,
         status: this.editMovieStatus,
       }
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxx',
-        },
-      }
       const data = this
       await this.$axios
-        .$put('http://localhost/auth/api/v1/movie', requestData, config)
+        .$put('http://localhost/auth/api/v1/movie', requestData)
         .then(function (response) {
           data.editDialog = false
           data.editTitleDialog = false
