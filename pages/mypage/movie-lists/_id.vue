@@ -89,14 +89,22 @@
               </nuxt-link>
             </v-col>
             <v-col cols="8" style="height: 100%">
-              <div>
+              <div
+                style="
+                  width: 90%;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  overflow: hidden;
+                "
+              >
                 <nuxt-link
+                  style="color: black"
                   :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`"
                   >{{ playListMovie.movie_title }}</nuxt-link
                 >
               </div>
               <!-- prettier-ignore -->
-              <div style="font-size: 0.9em; max-height: 4.5em; overflow: hidden; white-space: pre-line"><nuxt-link :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`">{{ playListMovie.movie_description }}</nuxt-link></div>
+              <div style="font-size: 0.9em; max-height: 4.5em; overflow: hidden; white-space: pre-line"><nuxt-link style="color: black" :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`">{{ playListMovie.movie_description }}</nuxt-link></div>
             </v-col>
           </v-row>
           <v-btn
