@@ -106,7 +106,6 @@
       width="100%"
       max-width="500px"
       style="background: white; position: relative"
-      persistent
       scrollable
     >
       <v-card style="background: white; position: relative" height="100%">
@@ -218,15 +217,9 @@ export default {
       this.paginationShow = true
     },
     async getPlayLists(movieId) {
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxxx',
-        },
-      }
       const responseData = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/auth/api/v1/play-lists/${movieId}`,
-          config
+          `http://localhost/auth/api/v1/play-lists/${movieId}`
         )
       )
 
@@ -242,13 +235,7 @@ export default {
       this.playLists = []
     },
     async addPlayListMovie(playListId) {
-      console.log('ADD')
       this.playListMovieModifing = true
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxxx',
-        },
-      }
 
       const movieId = this.menuClickedMovieId
       const params = {
@@ -256,9 +243,8 @@ export default {
         movie_id: movieId,
       }
       await this.$axios
-        .$post(`http://localhost/auth/api/v1/play-list-items`, params, config)
+        .$post(`http://localhost/auth/api/v1/play-list-items`, params)
         .then(() => {
-          console.log('OK')
           this.getPlayLists(movieId)
         })
         .catch((err) => {
@@ -268,15 +254,9 @@ export default {
     },
     async deletePlayListMovie(playListId, movieId) {
       this.playListMovieModifing = true
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxxx',
-        },
-      }
       await this.$axios
         .$delete(
-          `http://localhost/auth/api/v1/play-list-items?play_list_id=${playListId}&movie_id=${movieId}`,
-          config
+          `http://localhost/auth/api/v1/play-list-items?play_list_id=${playListId}&movie_id=${movieId}`
         )
         .then(() => {
           console.log('OK')
