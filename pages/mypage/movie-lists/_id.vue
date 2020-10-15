@@ -20,9 +20,8 @@
           </v-col>
           <v-col cols="6">
             <div class="mb-4">{{ playList.play_list_name }}</div>
-            <div style="font-size: 0.9em">
-              {{ playList.play_list_description }}
-            </div>
+            <!-- prettier-ignore -->
+            <div style="font-size: 0.9em; white-space: pre-line">{{ playList.play_list_description }}</div>
           </v-col>
         </v-row>
       </v-sheet>
@@ -76,11 +75,8 @@
             </v-col>
             <v-col cols="8" style="height: 100%">
               <div>{{ playListMovie.movie_title }}</div>
-              <div
-                style="font-size: 0.9em; max-height: 4.5em; overflow: hidden"
-              >
-                {{ playListMovie.movie_description }}
-              </div>
+              <!-- prettier-ignore -->
+              <div style="font-size: 0.9em; max-height: 4.5em; overflow: hidden; white-space: pre-line">{{ playListMovie.movie_description }}</div>
             </v-col>
           </v-row>
           <v-btn
