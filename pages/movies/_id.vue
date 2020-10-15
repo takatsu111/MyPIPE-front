@@ -156,7 +156,7 @@ export default {
       this.movie = movieAndComments.movie
       this.userPostedMovie = movieAndComments.posted_user
 
-      this.options.sources[0].src = `http://--------/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
+      this.options.sources[0].src = `http://d100q3wt0wdr5h.cloudfront.net/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
 
       this.player = videojs(
         this.$refs.videoPlayer,

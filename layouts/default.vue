@@ -51,9 +51,7 @@
     <v-app-bar color="#06ACB5" dark app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title color="white"
-        ><nuxt-link to="/" style="color: white"
-          >MyPIPE</nuxt-link
-        ></v-toolbar-title
+        ><a href="/" style="color: white">MyPIPE</a></v-toolbar-title
       >
     </v-app-bar>
 

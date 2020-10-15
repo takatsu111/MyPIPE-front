@@ -63,7 +63,7 @@
         <v-row>
           <v-col cols="4">
             <v-img
-              :src="`https://-----/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_thumbnail_name}`"
+              :src="`https://d100q3wt0wdr5h.cloudfront.net/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
               contain
