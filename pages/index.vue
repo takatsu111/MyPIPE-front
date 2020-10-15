@@ -15,7 +15,27 @@
         </v-text-field>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row>
+      <v-col cols="12" xl="2" sm="4">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark v-bind="attrs" v-on="on">
+              <v-icon>mdi-sort</v-icon>
+              並べ替え
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item link @click="orderMoviesByPostedDay('desc')">
+              <v-list-item-title>投稿日(新しい順)</v-list-item-title>
+            </v-list-item>
+            <v-list-item link @click="orderMoviesByPostedDay('asc')">
+              <v-list-item-title>投稿日(古い順)</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col
         v-for="movie in movies"
         :key="movie.movie_id"
@@ -31,7 +51,7 @@
           :to="'/movies/' + movie.movie_id"
         >
           <v-img
-            :src="`http://---/thumbnails/${movie.movie_id}${movie.movie_thumbnail_name}`"
+            :src="`http://d100q3wt0wdr5h.cloudfront.net/thumbnails/${movie.movie_id}${movie.movie_thumbnail_name}`"
             width="100%"
             aspect-ratio="1.77"
             contain
@@ -165,13 +185,14 @@ export default {
     return {
       page: query.page === undefined ? 1 : parseInt(query.page),
       keyWord: query.keyWord === undefined ? '' : query.keyWord,
+      moviesOrderByPostedDay: query.order === undefined ? 'asc' : query.order,
     }
   },
   data() {
     return {
       paginationShow: false,
-      page: null,
-      perPage: 50,
+      page: 1,
+      perPage: 24,
       keyWord: '',
       movies: [],
       count: null,
@@ -181,6 +202,7 @@ export default {
       playLists: [],
       playListMovieModifing: false,
       menuClickedMovieId: null,
+      moviesOrderByPostedDay: 'asc',
     }
   },
   computed: {
@@ -200,21 +222,25 @@ export default {
     async getMovies() {
       const movies = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/api/v1/index-movies?page=${this.page}&keyWord=${this.keyWord}`
+          `http://localhost/api/v1/index-movies?page=${this.page}&keyWord=${this.keyWord}&order=${this.moviesOrderByPostedDay}`
         )
       )
 
       this.movies = movies.movies
       this.count = movies.movie_count
     },
+    async orderMoviesByPostedDay(order) {
+      this.moviesOrderByPostedDay = order
+      await this.pagination()
+    },
     async pagination() {
+      this.$router.push(
+        `?page=${this.page}&keyWord=${this.keyWord}&order=${this.moviesOrderByPostedDay}`
+      )
+      await this.getMovies()
       window.scrollTo({
         top: 0,
       })
-      this.paginationShow = false
-      this.$router.push(`?page=${this.page}&keyWord=${this.keyWord}`)
-      await this.getMovies()
-      this.paginationShow = true
     },
     async getPlayLists(movieId) {
       const responseData = JSON.parse(

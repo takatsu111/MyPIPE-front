@@ -74,20 +74,29 @@
           </v-btn>
           <v-row style="height: 100%">
             <v-col cols="4" class="py-1" style="height: 100%">
-              <v-img
-                src="https://www.pakutaso.com/shared/img/thumb/gamerIMGL9105_TP_V.jpg"
-                width="100%"
-                height="100%"
-                aspect-ratio="1.77"
-                class="thumbnail-img"
-                position="left center"
-                contain
-              ></v-img>
+              <nuxt-link
+                :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`"
+              >
+                <v-img
+                  :src="`https://d100q3wt0wdr5h.cloudfront.net/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
+                  width="100%"
+                  height="100%"
+                  aspect-ratio="1.77"
+                  class="thumbnail-img"
+                  position="left center"
+                  contain
+                ></v-img>
+              </nuxt-link>
             </v-col>
             <v-col cols="8" style="height: 100%">
-              <div>{{ playListMovie.movie_title }}</div>
+              <div>
+                <nuxt-link
+                  :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`"
+                  >{{ playListMovie.movie_title }}</nuxt-link
+                >
+              </div>
               <!-- prettier-ignore -->
-              <div style="font-size: 0.9em; max-height: 4.5em; overflow: hidden; white-space: pre-line">{{ playListMovie.movie_description }}</div>
+              <div style="font-size: 0.9em; max-height: 4.5em; overflow: hidden; white-space: pre-line"><nuxt-link :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`">{{ playListMovie.movie_description }}</nuxt-link></div>
             </v-col>
           </v-row>
           <v-btn

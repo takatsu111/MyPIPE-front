@@ -67,7 +67,9 @@
           :src="
             'http://d100q3wt0wdr5h.cloudfront.net/thumbnails/' +
             item.movie_id +
-            item.movie_thumbnail_name
+            item.movie_thumbnail_name +
+            '?cacheKey=' +
+            cacheKey
           "
           contain
         ></v-img>
@@ -369,6 +371,7 @@ export default {
       editPublicDialog: false,
       editStatus: null,
       editDialogButtonEnable: true,
+      cacheKey: new Date(),
       headers: [
         { text: 'サムネイル', value: 'thumbnail' },
         {
@@ -388,10 +391,12 @@ export default {
   },
   created() {
     const data = this
-    const countup = function () {
+    const get = function () {
       data.getMovies()
+      // data.refreshCacheKey()
     }
-    setInterval(countup, 5000)
+    setInterval(get, 5000)
+    // setInterval(this.refreshCacheKey(), 1000)
   },
   methods: {
     async getMovies() {
@@ -399,6 +404,9 @@ export default {
         'http://localhost/auth/api/v1/movies'
       )
       this.movies = JSON.parse(movies)
+    },
+    refreshCacheKey() {
+      this.cacheKey = new Date()
     },
     openEditModal(id, title, description) {
       this.editMovieId = id
