@@ -7,6 +7,17 @@
         </h2>
       </v-col>
     </v-row>
+    <v-row class="px-3 py-0">
+      <v-spacer></v-spacer>
+      <v-btn v-if="liked" icon @click="evaluate('bad')">
+        <v-icon color="red">mdi-heart</v-icon>
+        <span>{{ likeCount }}</span>
+      </v-btn>
+      <v-btn v-else icon @click="evaluate('good')">
+        <v-icon color="red">mdi-heart-outline</v-icon>
+        <span>{{ likeCount }}</span>
+      </v-btn>
+    </v-row>
     <v-row>
       <v-col>
         <video
@@ -27,7 +38,7 @@
     </v-row>
     <v-row>
       <v-col v-if="movie !== null" class="text-center">
-        <h2>{{ userPostedMovie.DisplayName }}aaaaa</h2>
+        <h2>{{ userPostedMovie.Name }}</h2>
       </v-col>
     </v-row>
     <v-row class="mb-10">
@@ -135,14 +146,31 @@ export default {
       player: null,
       comments: [],
       movie: null,
+      likeCount: null,
       userPostedMovie: null,
       comment: null,
       postCommentInProgress: false,
       postCommentError: false,
+      liked: false,
     }
   },
   async mounted() {
+    const token = this.$store.$auth.getToken('local')
     await this.getMovieAndComments()
+    if (token !== null) {
+      const base64Url = token.substr(7).split('.')[1]
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+      const userId = JSON.parse(decodeURIComponent(escape(window.atob(base64))))
+        .id
+      const evaluated = await this.$axios.$get(
+        `http://localhost/evaluated?user_id=${userId}&movie_id=${this.movieId}`
+      )
+      if (evaluated.evaluated === 'true') {
+        this.liked = true
+      } else {
+        this.liked = false
+      }
+    }
   },
   methods: {
     async getMovieAndComments() {
@@ -155,6 +183,7 @@ export default {
       this.comments = movieAndComments.comments
       this.movie = movieAndComments.movie
       this.userPostedMovie = movieAndComments.posted_user
+      this.likeCount = movieAndComments.movie_like_count
 
       this.options.sources[0].src = `http://d100q3wt0wdr5h.cloudfront.net/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
 
@@ -195,12 +224,28 @@ export default {
           data.getMovieAndComments()
           data.comment = null
         })
-        .catch((error) => {
-          console.log(error)
+        .catch(() => {
           this.postCommentError = true
         })
 
       this.postCommentInProgress = false
+    },
+    async evaluate(evaluate) {
+      const requestData = {
+        movie_id: this.movie.ID,
+        evaluate,
+      }
+      await this.$axios
+        .$post('http://localhost/auth/api/v1/evaluates', requestData)
+        .then(() => {
+          if (evaluate === 'good') {
+            this.likeCount += 1
+            this.liked = true
+          } else {
+            this.likeCount -= 1
+            this.liked = false
+          }
+        })
     },
   },
 }
