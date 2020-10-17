@@ -392,11 +392,11 @@ export default {
   created() {
     const data = this
     const get = function () {
-      data.getMovies()
-      // data.refreshCacheKey()
+      if (data.$route.path === '/mypage/movies') {
+        data.getMovies()
+      }
     }
     setInterval(get, 5000)
-    // setInterval(this.refreshCacheKey(), 1000)
   },
   methods: {
     async getMovies() {
