@@ -32,6 +32,7 @@
         class="mr-3"
         color="primary"
         :disabled="!playListMoviesOrderChanged"
+        @click="editOrder"
         >並び順を決定</v-btn
       >
       <v-btn
@@ -61,17 +62,36 @@
           class="mx-auto px-4"
           style="background: #f2f2f2; position: relative"
         >
-          <v-btn
+          <!-- <v-btn
             class="mx-2"
-            fab
-            dark
-            small
-            color="pink"
+            icon
             style="position: absolute; top: 8px; right: 0"
             @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
           >
-            <v-icon dark> mdi-close </v-icon>
-          </v-btn>
+            <v-icon> mdi-menu </v-icon>
+          </v-btn> -->
+
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                style="position: absolute; top: 0; right: 0"
+                v-on="on"
+              >
+                <v-icon> mdi-menu </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item style="cursor: pointer">
+                <v-list-item-title
+                  @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
+                  >削除</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
+
           <v-row style="height: 100%">
             <v-col cols="4" class="py-1" style="height: 100%">
               <nuxt-link
@@ -175,11 +195,6 @@ export default {
       }
     },
     updatePlayListMoviesOrder() {
-      this.playListMovies = this.playListMovies.map((value, index, array) => {
-        value.order = index + 1
-        return value
-      })
-
       for (const i in this.playListMovies) {
         if (
           this.playListMovies[i].order !== this.initialplaylistMovies[i].order
@@ -210,6 +225,27 @@ export default {
         .catch((err) => {
           console.log(err)
         })
+    },
+    async editOrder() {
+      const playListMovieOrder = []
+
+      for (let i = 0; i < this.playListMovies.length; i++) {
+        playListMovieOrder.push({
+          play_list_movie_id: this.playListMovies[i].movie_id,
+          play_lise_movie_order: i + 1,
+        })
+      }
+
+      const data = {
+        play_list_id: this.playListId,
+        play_list_movie_id_and_order: playListMovieOrder,
+      }
+      await this.$axios.$put(
+        `http://localhost/auth/api/v1/play-list-items`,
+        data
+      )
+      this.initialplaylistMovies = this.playListMovies
+      this.playListMoviesOrderChanged = false
     },
   },
 }
