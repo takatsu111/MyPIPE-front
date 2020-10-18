@@ -27,17 +27,15 @@
       </v-col>
     </v-row>
     <v-row v-if="movie !== null" style="min-height: 3em">
-      <v-col>
+      <v-col cols="12">
         <v-img
-          width="100px"
-          height="100px"
+          width="50px"
+          height="50px"
           class="mx-auto"
           src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
         ></v-img>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col v-if="movie !== null" class="text-center">
+      <v-col v-if="movie !== null" cols="12" class="text-center">
         <h2>{{ userPostedMovie.Name }}</h2>
       </v-col>
     </v-row>
@@ -155,9 +153,9 @@ export default {
     }
   },
   async mounted() {
-    const token = this.$store.$auth.getToken('local')
     await this.getMovieAndComments()
-    if (token !== null) {
+    if (this.$auth.loggedIn) {
+      const token = this.$store.$auth.getToken('local')
       const base64Url = token.substr(7).split('.')[1]
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
       const userId = JSON.parse(decodeURIComponent(escape(window.atob(base64))))
