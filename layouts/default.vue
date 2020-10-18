@@ -118,10 +118,15 @@ export default {
   },
   watch: {
     async isLoggedIn() {
-      if (this.isLoggedIn) {
+      if (this.isLoggedIn && this.user.user_name !== null) {
         this.user = await this.$axios.$get(`http://localhost/auth/api/v1/user`)
       }
     },
+  },
+  async mounted() {
+    if (this.isLoggedIn) {
+      this.user = await this.$axios.$get(`http://localhost/auth/api/v1/user`)
+    }
   },
 }
 </script>

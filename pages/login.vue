@@ -8,7 +8,11 @@
           </v-row>
           <v-row justify="center">
             <v-col cols="12" md="10" sm="10">
-              <v-text-field v-model="email" label="Eメールアドレス" />
+              <v-text-field
+                v-model="email"
+                label="Eメールアドレス"
+                @keydown.enter="loginWithAuthModule"
+              />
               <p class="caption mb-0" />
             </v-col>
           </v-row>
@@ -18,6 +22,7 @@
                 v-model="password"
                 type="password"
                 label="パスワード"
+                @keydown.enter="loginWithAuthModule"
               />
             </v-col>
           </v-row>
