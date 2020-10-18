@@ -53,6 +53,23 @@
       <v-toolbar-title color="white"
         ><a href="/" style="color: white">MyPIPE</a></v-toolbar-title
       >
+      <v-spacer></v-spacer>
+      <template v-if="isLoggedIn">
+        <v-img
+          max-height="50"
+          max-width="50"
+          contain
+          src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
+          class="mr-5"
+        ></v-img>
+        <div class="mr-5">
+          {{ user.user_name }}
+        </div>
+      </template>
+      <template v-else>
+        <v-btn nuxt link to="/login" text> ログイン </v-btn>
+      </template>
+      <span></span>
     </v-app-bar>
 
     <v-main>
@@ -65,6 +82,9 @@
 export default {
   data() {
     return {
+      user: {
+        user_name: null,
+      },
       menus: [{ title: 'Top', icon: 'mdi-web', url: '/' }],
       clipped: false,
       drawer: false,
@@ -90,6 +110,18 @@ export default {
       expandOnHover: true,
       title: 'H-UENO',
     }
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$auth.loggedIn
+    },
+  },
+  watch: {
+    async isLoggedIn() {
+      if (this.isLoggedIn) {
+        this.user = await this.$axios.$get(`http://localhost/auth/api/v1/user`)
+      }
+    },
   },
 }
 </script>
