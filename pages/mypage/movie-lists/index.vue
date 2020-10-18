@@ -56,7 +56,7 @@
           small
           color="pink"
           style="position: absolute; top: -20px; right: -20px"
-          @click.prevent.stop
+          @click.prevent.stop="openDeleteDialog(playList.play_list_id)"
         >
           <v-icon dark> mdi-close </v-icon>
         </v-btn>
@@ -83,6 +83,17 @@
     <v-snackbar v-model="completeCreatePlayListNotification" timeout="3000"
       >再生リストの作成が完了しました</v-snackbar
     >
+    <v-dialog v-model="confirmDeletePlayList" persistent max-width="300px">
+      <v-card class="px-12 py-8">
+        <div class="text-center mb-5">削除しますか？</div>
+        <v-card-actions>
+          <span style="display: inline-block" class="mx-auto">
+            <v-btn text @click="deletePlayList"> はい </v-btn>
+            <v-btn text @click="confirmDeletePlayList = false"> いいえ </v-btn>
+          </span>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -95,6 +106,8 @@ export default {
       newPlayListName: null,
       newPlayListDescription: null,
       completeCreatePlayListNotification: false,
+      confirmDeletePlayList: false,
+      playListIdToDelete: null,
     }
   },
   async mounted() {
@@ -128,6 +141,21 @@ export default {
         })
 
       await that.getPlayLists()
+    },
+    openDeleteDialog(playListId) {
+      this.playListIdToDelete = playListId
+      this.confirmDeletePlayList = true
+    },
+    async deletePlayList() {
+      try {
+        await this.$axios.$delete(
+          `http://localhost/auth/api/v1/play-lists?play_list_id=${this.playListIdToDelete}`
+        )
+        this.confirmDeletePlayList = false
+        await this.getPlayLists()
+      } catch {
+        console.log('Delete Failed.')
+      }
     },
   },
 }
