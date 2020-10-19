@@ -228,6 +228,16 @@ export default {
         : Math.floor(this.count / this.perPage) + 1
     },
   },
+  watch: {
+    async $route(to, from) {
+      console.log(to.query.keyWord)
+      this.keyWord = to.query.keyWord === undefined ? '' : to.query.keyWord
+      this.page = to.query.page === undefined ? 1 : parseInt(to.query.page)
+      this.moviesOrderByPostedDay =
+        to.query.order === undefined ? 'asc' : to.query.order
+      await this.getMovies()
+    },
+  },
   async mounted() {
     await this.getMovies()
     this.paginationShow = true
