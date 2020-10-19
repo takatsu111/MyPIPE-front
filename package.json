@@ -23,7 +23,9 @@
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "nuxt": "^2.14.5",
+    "vee-validate": "^3.4.2",
     "video.js": "^7.8.4",
+    "vue-cropperjs": "^4.1.0",
     "vuedraggable": "^2.24.1"
   },
   "devDependencies": {
