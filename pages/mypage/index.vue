@@ -17,7 +17,7 @@
             height="100px"
             style="border-radius: 50%"
             contain
-            src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
+            :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${id}/${profileImageName}`"
           >
           </v-img>
         </div>
@@ -29,7 +29,7 @@
             accept="image/jpeg, image/jpg, image/png"
             @change="upload"
           />
-          <v-btn @click="clicked">プロフィール画像を変更</v-btn>
+          <v-btn @click="selectFile">プロフィール画像を変更</v-btn>
           <v-dialog v-model="openProfileImageModal" max-width="900px">
             <v-sheet>
               <vue-cropper
@@ -48,6 +48,8 @@
                 alt="Source Image"
                 @cropstart="cropImage"
                 @cropend="cropImage"
+                @ready="cropImage"
+                @zoom="cropImage"
               >
               </vue-cropper>
               <div class="py-10">
@@ -77,14 +79,14 @@
             v-validate="'required'"
             label="名前"
           ></v-text-field>
-          <div class="mb-5" v-for="error in errors.name" :key="error">
+          <div v-for="error in errors.name" :key="error" class="mb-5">
             {{ error }}
           </div>
           <v-btn @click="changeName">名前を変更</v-btn>
         </div>
         <div class="mb-10" width="100%">
           <v-text-field v-model="email" label="メールアドレス"></v-text-field>
-          <div class="mb-5" v-for="error in errors.email" :key="error">
+          <div v-for="error in errors.email" :key="error" class="mb-5">
             {{ error }}
           </div>
           <v-btn @click="changeEmail">メールアドレスを変更</v-btn>
@@ -123,6 +125,7 @@ export default {
   components: { VueCropper },
   data() {
     return {
+      id: null,
       name: '',
       email: '',
       newPassword: '',
@@ -132,6 +135,7 @@ export default {
       cropImg: null,
       uploadImg: null,
       openProfileImageModal: false,
+      profileImageName: '',
       errors: {
         name: [],
         email: [],
@@ -141,12 +145,19 @@ export default {
     }
   },
   async mounted() {
-    const userData = await this.$axios.$get(`http://localhost/auth/api/v1/user`)
-    this.name = userData.user_name
-    this.email = userData.user_email
+    await this.getUserData()
   },
   methods: {
-    clicked() {
+    async getUserData() {
+      const userData = await this.$axios.$get(
+        `http://localhost/auth/api/v1/user`
+      )
+      this.id = userData.user_id
+      this.name = userData.user_name
+      this.email = userData.user_email
+      this.profileImageName = userData.user_profile_image_name
+    },
+    selectFile() {
       this.$refs.upload.click()
     },
     upload() {
@@ -174,24 +185,51 @@ export default {
     cropImage() {
       this.cropImgToShow = this.$refs.cropper.getCroppedCanvas().toDataURL()
     },
-    async uploadProfileImage() {
-      let data = null
-      this.cropImg = this.$refs.cropper.getCroppedCanvas().toBlob((blob) => {
-        this.cropImg = blob
-        data = new FormData()
-        data.append('profileImage', blob, blob.type)
-      })
+    uploadProfileImage() {
+      const self = this
+      this.$refs.cropper.getCroppedCanvas().toBlob(async (blob) => {
+        const requestBody = new FormData()
 
-      try {
-        await this.$axios.$post('http://localhost/profile-image', data)
-      } catch (error) {
-        console.log(error)
-      }
+        const profileImageFile = new File(
+          [blob],
+          `profileImage.${blob.type.split('/')[1]}`
+        )
+        requestBody.append('profileImage', profileImageFile)
+
+        try {
+          const config = {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+          await self.$axios.$put(
+            'http://localhost/auth/api/v1/profile-image',
+            requestBody,
+            config
+          )
+          self.openProfileImageModal = false
+        } catch (error) {
+          console.log(error)
+        }
+        self.getUserData()
+      })
     },
-    changeName() {
+    async changeName() {
       this.errors.name = []
       if (this.name.length === 0) {
         this.errors.name.push('名前は必須です。')
+        return
+      }
+      const requestData = {
+        user_name: this.name,
+      }
+      try {
+        await this.$axios.$put(
+          'http://localhost/auth/api/v1/user-name',
+          requestData
+        )
+      } catch (error) {
+        console.log(error)
       }
 
       // if (this.errors.name.length !== 0) {
@@ -216,7 +254,7 @@ export default {
       //   return
       // }
     },
-    changePassword() {
+    async changePassword() {
       this.errors.newPassword = []
       this.errors.confirmNewPassword = []
       const newPasswordRegex = RegExp(/^[0-9a-zA-Z]*$/)
@@ -231,6 +269,20 @@ export default {
 
       if (this.confirmNewPassword !== this.newPassword) {
         this.errors.confirmNewPassword.push('新しいパスワードと異なります。')
+      }
+
+      const requestData = {
+        password: this.newPassword,
+      }
+      try {
+        await this.$axios.$put(
+          'http://localhost/auth/api/v1/password',
+          requestData
+        )
+        this.newPassword = ''
+        this.confirmNewPassword = ''
+      } catch (error) {
+        console.log(error)
       }
     },
   },
