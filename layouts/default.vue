@@ -51,20 +51,29 @@
     <v-app-bar color="#06ACB5" dark app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title color="white"
-        ><a href="/" style="color: white">MyPIPE</a></v-toolbar-title
+        ><a href="/" style="color: white">MyMovies</a></v-toolbar-title
       >
       <v-spacer></v-spacer>
       <template v-if="isLoggedIn">
-        <v-img
+        <!-- <v-img
+          v-if="user.user_profile_image_name !== ''"
+          max-width="50px"
+          max-height="50px"
+          class="mx-auto"
+          style="border-radius: 50%"
+          :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${user.user_id}/${user.user_profile_image_name}`"
+        ></v-img> -->
+        <v-icon style="font-size: 40px">mdi-account-circle</v-icon>
+        <!-- <v-img
           max-height="50"
           max-width="50"
           contain
           src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
           class="mr-5"
-        ></v-img>
-        <div class="mr-5">
+        ></v-img> -->
+        <!-- <div class="mr-5">
           {{ user.user_name }}
-        </div>
+        </div> -->
       </template>
       <template v-else>
         <v-btn nuxt link to="/login" text> ログイン </v-btn>
@@ -119,13 +128,13 @@ export default {
   watch: {
     async isLoggedIn() {
       if (this.isLoggedIn && this.user.user_name !== null) {
-        this.user = await this.$axios.$get(`http://localhost/auth/api/v1/user`)
+        this.user = await this.$axios.$get(`/auth/api/v1/user`)
       }
     },
   },
   async mounted() {
     if (this.isLoggedIn) {
-      this.user = await this.$axios.$get(`http://localhost/auth/api/v1/user`)
+      this.user = await this.$axios.$get(`/auth/api/v1/user`)
     }
   },
 }

@@ -65,7 +65,7 @@
           width="200px"
           height="120px"
           :src="
-            'http://d100q3wt0wdr5h.cloudfront.net/thumbnails/' +
+            'http://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/' +
             item.movie_id +
             item.movie_thumbnail_name +
             '?cacheKey=' +
@@ -400,9 +400,7 @@ export default {
   },
   methods: {
     async getMovies() {
-      const movies = await this.$axios.$get(
-        'http://localhost/auth/api/v1/movies'
-      )
+      const movies = await this.$axios.$get('/auth/api/v1/movies')
       this.movies = JSON.parse(movies)
     },
     refreshCacheKey() {
@@ -504,7 +502,7 @@ export default {
 
       const data = this
       await this.$axios
-        .$post('http://localhost/auth/api/v1/movie', formData, config)
+        .$post('/auth/api/v1/movie', formData, config)
         .then(function (response) {
           const jsonResponseData = JSON.parse(response)
           data.newDialog = false
@@ -541,7 +539,7 @@ export default {
 
       const data = this
       await this.$axios
-        .$put('http://localhost/auth/api/v1/thumbnail', formData, config)
+        .$put('/auth/api/v1/thumbnail', formData, config)
         .then(function (response) {
           data.getMovies()
         })
@@ -562,7 +560,7 @@ export default {
       }
       const data = this
       await this.$axios
-        .$put('http://localhost/auth/api/v1/movie', requestData)
+        .$put('/auth/api/v1/movie', requestData)
         .then(function (response) {
           data.editDialog = false
           data.editTitleDialog = false

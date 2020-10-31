@@ -52,7 +52,7 @@
             :to="'/movies/' + movie.movie_id"
           >
             <v-img
-              :src="`http://d100q3wt0wdr5h.cloudfront.net/thumbnails/${movie.movie_id}${movie.movie_thumbnail_name}`"
+              :src="`http://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${movie.movie_id}${movie.movie_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
               contain
@@ -64,12 +64,14 @@
 
             <v-card-actions @click.prevent>
               <v-list-item class="px-1" style="width: 100%">
-                <v-list-item-avatar color="grey darken-3">
+                <v-list-item-avatar>
                   <v-img
-                    class="elevation-6"
-                    alt=""
-                    src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
+                    v-if="movie.user_profile_image_name !== ''"
+                    :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${movie.user_id}/${movie.user_profile_image_name}`"
                   ></v-img>
+                  <v-icon v-else style="font-size: 40px"
+                    >mdi-account-circle</v-icon
+                  >
                 </v-list-item-avatar>
 
                 <v-list-item-content style="min-width: 50%; max-width: 50%">
@@ -247,7 +249,7 @@ export default {
       this.getMoviesComplete = false
       const movies = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/api/v1/index-movies?page=${this.page}&keyWord=${this.keyWord}&order=${this.moviesOrderByPostedDay}`
+          `/api/v1/index-movies?page=${this.page}&keyWord=${this.keyWord}&order=${this.moviesOrderByPostedDay}`
         )
       )
 
@@ -271,9 +273,7 @@ export default {
     },
     async getPlayLists(movieId) {
       const responseData = JSON.parse(
-        await this.$axios.$get(
-          `http://localhost/auth/api/v1/play-lists/${movieId}`
-        )
+        await this.$axios.$get(`/auth/api/v1/play-lists/${movieId}`)
       )
 
       this.playLists = responseData.play_lists
@@ -296,7 +296,7 @@ export default {
         movie_id: movieId,
       }
       await this.$axios
-        .$post(`http://localhost/auth/api/v1/play-list-items`, params)
+        .$post(`/auth/api/v1/play-list-items`, params)
         .then(() => {
           this.getPlayLists(movieId)
         })
@@ -309,7 +309,7 @@ export default {
       this.playListMovieModifing = true
       await this.$axios
         .$delete(
-          `http://localhost/auth/api/v1/play-list-items?play_list_id=${playListId}&movie_id=${movieId}`
+          `/auth/api/v1/play-list-items?play_list_id=${playListId}&movie_id=${movieId}`
         )
         .then(() => {
           console.log('OK')

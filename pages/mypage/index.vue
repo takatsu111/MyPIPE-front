@@ -3,7 +3,7 @@
     <v-row class="mx-auto" style="max-width: 1200px">
       <v-col cols="12" sm="6" class="mt-4">
         <div
-          class="mx-auto mb-5"
+          class="mx-auto mb-5 text-center"
           style="
             background-color: #f0f0f0;
             width: 280px;
@@ -12,14 +12,18 @@
           "
         >
           <v-img
+            v-if="profileImageURL"
             class="mx-auto mb-10"
             width="100px"
             height="100px"
             style="border-radius: 50%"
             contain
-            :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${id}/${profileImageName}`"
+            :src="profileImageURL"
           >
           </v-img>
+          <v-icon v-else class="mb-auto" style="font-size: 100px"
+            >mdi-account-circle</v-icon
+          >
         </div>
         <div class="text-center">
           <input
@@ -144,14 +148,20 @@ export default {
       },
     }
   },
+  computed: {
+    profileImageURL() {
+      if (this.profileImageName) {
+        return `http://d100q3wt0wdr5h.cloudfront.net/profile_images/${this.id}/${this.profileImageName}`
+      }
+      return ''
+    },
+  },
   async mounted() {
     await this.getUserData()
   },
   methods: {
     async getUserData() {
-      const userData = await this.$axios.$get(
-        `http://localhost/auth/api/v1/user`
-      )
+      const userData = await this.$axios.$get(`/auth/api/v1/user`)
       this.id = userData.user_id
       this.name = userData.user_name
       this.email = userData.user_email
@@ -203,7 +213,7 @@ export default {
             },
           }
           await self.$axios.$put(
-            'http://localhost/auth/api/v1/profile-image',
+            '/auth/api/v1/profile-image',
             requestBody,
             config
           )
@@ -224,10 +234,7 @@ export default {
         user_name: this.name,
       }
       try {
-        await this.$axios.$put(
-          'http://localhost/auth/api/v1/user-name',
-          requestData
-        )
+        await this.$axios.$put('/auth/api/v1/user-name', requestData)
       } catch (error) {
         console.log(error)
       }
@@ -275,10 +282,7 @@ export default {
         password: this.newPassword,
       }
       try {
-        await this.$axios.$put(
-          'http://localhost/auth/api/v1/password',
-          requestData
-        )
+        await this.$axios.$put('/auth/api/v1/password', requestData)
         this.newPassword = ''
         this.confirmNewPassword = ''
       } catch (error) {

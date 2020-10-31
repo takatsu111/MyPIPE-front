@@ -11,7 +11,16 @@
         <v-row>
           <v-col cols="6">
             <v-img
-              src="https://www.pakutaso.com/shared/img/thumb/gamerIMGL9105_TP_V.jpg"
+              v-if="playList.play_list_thumbnail_name !== ''"
+              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_thumbnail_movie_id}${playList.play_list_thumbnail_name}`"
+              width="100%"
+              aspect-ratio="1.77"
+              position="left center"
+              contain
+            ></v-img>
+            <v-img
+              v-else
+              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_first_movie_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
               position="left center"
@@ -83,11 +92,11 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item style="cursor: pointer">
-                <v-list-item-title
-                  @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
-                  >削除</v-list-item-title
-                >
+              <v-list-item
+                style="cursor: pointer"
+                @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
+              >
+                <v-list-item-title>再生リストから削除</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -98,7 +107,7 @@
                 :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`"
               >
                 <v-img
-                  :src="`https://d100q3wt0wdr5h.cloudfront.net/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
+                  :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
                   width="100%"
                   height="100%"
                   aspect-ratio="1.77"
@@ -139,10 +148,10 @@
     <v-dialog
       v-model="confirmDeletePlayListMovies"
       persistent
-      max-width="300px"
+      max-width="500px"
     >
       <v-card class="px-12 py-8">
-        <div class="text-center mb-5">削除しますか？</div>
+        <div class="text-center mb-5">再生リストから削除しますか？</div>
         <v-card-actions>
           <span style="display: inline-block" class="mx-auto">
             <v-btn text @click="deletePlayListMovie"> はい </v-btn>
@@ -185,7 +194,7 @@ export default {
     async getPlayListMovies() {
       const responseData = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/auth/api/v1/play-list-items/${this.playListId}`
+          `/auth/api/v1/play-list-items/${this.playListId}`
         )
       )
       if (responseData !== null) {
@@ -216,7 +225,7 @@ export default {
     async deletePlayListMovie() {
       await this.$axios
         .$delete(
-          `http://localhost/auth/api/v1/play-list-items?play_list_id=${this.playListId}&movie_id=${this.deleteMovieId}`
+          `/auth/api/v1/play-list-items?play_list_id=${this.playListId}&movie_id=${this.deleteMovieId}`
         )
         .then(() => {
           this.getPlayListMovies()
@@ -240,10 +249,7 @@ export default {
         play_list_id: this.playListId,
         play_list_movie_id_and_order: playListMovieOrder,
       }
-      await this.$axios.$put(
-        `http://localhost/auth/api/v1/play-list-items`,
-        data
-      )
+      await this.$axios.$put(`/auth/api/v1/play-list-items`, data)
       this.initialplaylistMovies = this.playListMovies
       this.playListMoviesOrderChanged = false
     },
