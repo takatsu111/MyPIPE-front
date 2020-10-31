@@ -49,7 +49,7 @@ export default {
 
   auth: {
     redirect: {
-      logout: '/login',
+      logout: '/',
       callback: false,
       home: '/',
     },

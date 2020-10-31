@@ -63,22 +63,30 @@
       >
       <v-spacer></v-spacer>
       <template v-if="isLoggedIn">
-        <!-- <v-img
+        <v-img
           v-if="user.user_profile_image_name !== ''"
           max-width="50px"
           max-height="50px"
-          class="mr-5"
+          class="mr-3"
           style="border-radius: 50%"
           :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${user.user_id}/${user.user_profile_image_name}`"
-        ></v-img> -->
-        <!-- <v-icon v-else class="mr-5" style="font-size: 40px"
+        ></v-img>
+        <v-icon v-else class="mr-3" style="font-size: 40px"
           >mdi-account-circle</v-icon
-        > -->
-        <nuxt-link to="/mypage">
+        >
+        <!-- <nuxt-link to="/mypage">
           <div class="mr-5">
             {{ user.user_name }}
           </div>
-        </nuxt-link>
+        </nuxt-link> -->
+        <v-btn nuxt link to="/mypage" text
+          ><span
+            style="width: 120px; overflow: hidden; text-transform: none"
+            class="text-center"
+            >{{ user.user_name }}</span
+          ></v-btn
+        >
+        <v-btn text @click="logout">ログアウト</v-btn>
       </template>
       <template v-else>
         <v-btn nuxt link to="/login" text> ログイン </v-btn>
@@ -134,24 +142,31 @@ export default {
   },
   watch: {
     async isLoggedIn() {
-      // if (this.isLoggedIn) {
-      //   this.user = await this.$axios.$get(`/auth/api/v1/user`)
-      // }
+      if (this.isLoggedIn) {
+        await this.getUserData()
+      }
     },
   },
-  created() {
+  async created() {
     this.setListener()
-    // if (this.isLoggedIn) {
-    //   this.user = await this.$axios.$get(`/auth/api/v1/user`)
-    // }
+    if (this.isLoggedIn) {
+      await this.getUserData()
+    }
   },
   methods: {
+    async getUserData() {
+      this.user = await this.$axios.$get(`/auth/api/v1/user`)
+    },
     setListener() {
       this.$nuxt.$on('showMessage', this.showMessage)
+      this.$nuxt.$on('getUserData', this.getUserData)
     },
     showMessage(message) {
       this.messageShown = true
       this.showMessageText = message
+    },
+    logout() {
+      this.$auth.logout()
     },
   },
 }
