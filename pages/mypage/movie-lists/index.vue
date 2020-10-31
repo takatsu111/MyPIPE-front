@@ -106,6 +106,7 @@
 </template>
 <script>
 export default {
+  middleware: ['checkLoggedIn'],
   data() {
     return {
       playLists: [],

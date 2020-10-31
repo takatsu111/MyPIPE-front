@@ -49,7 +49,6 @@ export default {
 
   auth: {
     redirect: {
-      login: '/login',
       logout: '/login',
       callback: false,
       home: '/',
@@ -58,8 +57,7 @@ export default {
       local: {
         endpoints: {
           login: {
-            url:
-              'http://MyMovies-1193229343.ap-northeast-1.elb.amazonaws.com/login',
+            url: 'http://localhost/login',
             method: 'post',
             propertyName: 'token',
           },
@@ -72,11 +70,11 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://MyMovies-1193229343.ap-northeast-1.elb.amazonaws.com/',
+    baseURL: 'http://localhost/',
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
 
-  baseURL: 'http://MyMovies-1193229343.ap-northeast-1.elb.amazonaws.com/',
+  baseURL: 'http://localhost/',
 }
