@@ -13,6 +13,7 @@ export default function ({ store, redirect }) {
       .exp
     const nowTimestamp = new Date().getTime() / 1000
     if (tokenExp < nowTimestamp) {
+      store.$auth.logout()
       redirect('/login')
     }
   }

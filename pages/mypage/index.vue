@@ -219,7 +219,16 @@ export default {
             config
           )
           self.openProfileImageModal = false
+          this.$nuxt.$emit(
+            'showMessage',
+            'プロフィール画像の変更が完了しました。'
+          )
+          this.$nuxt.$emit('getUserData')
         } catch (error) {
+          this.$nuxt.$emit(
+            'showMessage',
+            'プロフィール画像の変更に失敗しました。再度試してください。'
+          )
           console.log(error)
         }
         self.getUserData()
@@ -236,13 +245,15 @@ export default {
       }
       try {
         await this.$axios.$put('/auth/api/v1/user-name', requestData)
+        this.$nuxt.$emit('showMessage', '名前の変更が完了しました。')
+        this.$nuxt.$emit('getUserData')
       } catch (error) {
+        this.$nuxt.$emit(
+          'showMessage',
+          '名前の変更に失敗しました。再度試してください。'
+        )
         console.log(error)
       }
-
-      // if (this.errors.name.length !== 0) {
-      //   return
-      // }
     },
     changeEmail() {
       this.errors.email = []
@@ -257,10 +268,6 @@ export default {
       if (!regex.test(this.email)) {
         this.errors.email.push('メールアドレスを正しく入力してください。')
       }
-
-      // if (this.errors.email.length !== 0) {
-      //   return
-      // }
     },
     async changePassword() {
       this.errors.newPassword = []
@@ -284,9 +291,15 @@ export default {
       }
       try {
         await this.$axios.$put('/auth/api/v1/password', requestData)
+        this.$nuxt.$emit('showMessage', 'パスワードの変更が完了しました。')
+        this.$nuxt.$emit('getUserData')
         this.newPassword = ''
         this.confirmNewPassword = ''
       } catch (error) {
+        this.$nuxt.$emit(
+          'showMessage',
+          'パスワードの変更に失敗しました。再度試してください。'
+        )
         console.log(error)
       }
     },
