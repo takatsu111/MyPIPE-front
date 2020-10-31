@@ -224,14 +224,16 @@ export default {
         .then((res) => {
           data.getMovieAndComments()
           data.comment = null
+          data.$nuxt.$emit('showMessage', 'コメントの投稿が完了しました。')
         })
         .catch(() => {
-          this.postCommentError = true
+          data.$nuxt.$emit('showMessage', 'コメントの投稿に失敗しました。')
         })
 
       this.postCommentInProgress = false
     },
     async evaluate(evaluate) {
+      const self = this
       const requestData = {
         movie_id: this.movie.ID,
         evaluate,
@@ -246,6 +248,9 @@ export default {
             this.likeCount -= 1
             this.liked = false
           }
+        })
+        .catch(() => {
+          self.$nuxt.$emit('showMessage', '動画の評価に失敗しました。')
         })
     },
   },

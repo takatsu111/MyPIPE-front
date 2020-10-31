@@ -126,6 +126,7 @@
 import VueCropper from 'vue-cropperjs'
 import 'cropperjs/dist/cropper.css'
 export default {
+  middleware: ['checkLoggedIn'],
   components: { VueCropper },
   data() {
     return {

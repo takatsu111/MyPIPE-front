@@ -348,6 +348,7 @@
 </template>
 <script>
 export default {
+  middleware: ['checkLoggedIn'],
   data() {
     return {
       errorMessageDialogOpen: false,
@@ -400,7 +401,9 @@ export default {
   },
   methods: {
     async getMovies() {
-      const movies = await this.$axios.$get('/auth/api/v1/movies')
+      const movies = await this.$axios.$get('/auth/api/v1/movies', {
+        progress: false,
+      })
       this.movies = JSON.parse(movies)
     },
     refreshCacheKey() {

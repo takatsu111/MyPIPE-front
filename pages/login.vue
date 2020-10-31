@@ -53,6 +53,7 @@ export default {
   },
   methods: {
     async loginWithAuthModule() {
+      const self = this
       await this.$auth
         .loginWith('local', {
           data: {
@@ -62,9 +63,18 @@ export default {
         })
         .then(
           (response) => {
+            if (this.$store.state.lastAuthFailedPage.lastAuthFailedURL) {
+              this.$store.commit(`lastAuthFailedPage/reset`)
+              self.$router.back()
+            }
+            self.$nuxt.$emit('showMessage', 'ログインが完了しました。')
             return response
           },
           (error) => {
+            self.$nuxt.$emit(
+              'showMessage',
+              'メールアドレスもしくはパスワードが異なります。'
+            )
             return error
           }
         )

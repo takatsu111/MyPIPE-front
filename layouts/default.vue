@@ -1,5 +1,13 @@
 <template>
   <v-app>
+    <v-snackbar v-model="messageShown" timeout="4000">
+      {{ showMessageText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="messageShown = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -59,21 +67,18 @@
           v-if="user.user_profile_image_name !== ''"
           max-width="50px"
           max-height="50px"
-          class="mx-auto"
+          class="mr-5"
           style="border-radius: 50%"
           :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${user.user_id}/${user.user_profile_image_name}`"
         ></v-img> -->
-        <v-icon style="font-size: 40px">mdi-account-circle</v-icon>
-        <!-- <v-img
-          max-height="50"
-          max-width="50"
-          contain
-          src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
-          class="mr-5"
-        ></v-img> -->
-        <!-- <div class="mr-5">
-          {{ user.user_name }}
-        </div> -->
+        <!-- <v-icon v-else class="mr-5" style="font-size: 40px"
+          >mdi-account-circle</v-icon
+        > -->
+        <nuxt-link to="/mypage">
+          <div class="mr-5">
+            {{ user.user_name }}
+          </div>
+        </nuxt-link>
       </template>
       <template v-else>
         <v-btn nuxt link to="/login" text> ログイン </v-btn>
@@ -91,6 +96,8 @@
 export default {
   data() {
     return {
+      messageShown: false,
+      showMessageText: '',
       user: {
         user_name: null,
       },
@@ -127,15 +134,25 @@ export default {
   },
   watch: {
     async isLoggedIn() {
-      if (this.isLoggedIn && this.user.user_name !== null) {
-        this.user = await this.$axios.$get(`/auth/api/v1/user`)
-      }
+      // if (this.isLoggedIn) {
+      //   this.user = await this.$axios.$get(`/auth/api/v1/user`)
+      // }
     },
   },
-  async mounted() {
-    if (this.isLoggedIn) {
-      this.user = await this.$axios.$get(`/auth/api/v1/user`)
-    }
+  created() {
+    this.setListener()
+    // if (this.isLoggedIn) {
+    //   this.user = await this.$axios.$get(`/auth/api/v1/user`)
+    // }
+  },
+  methods: {
+    setListener() {
+      this.$nuxt.$on('showMessage', this.showMessage)
+    },
+    showMessage(message) {
+      this.messageShown = true
+      this.showMessageText = message
+    },
   },
 }
 </script>

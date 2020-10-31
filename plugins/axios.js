@@ -1,4 +1,4 @@
-export default function ({ $axios, redirect, store }) {
+export default function ({ $axios, redirect, store, route }) {
   $axios.onRequest((config) => {
     config.headers.Authorization = window.localStorage.getItem(
       'auth._token.local'
@@ -6,7 +6,8 @@ export default function ({ $axios, redirect, store }) {
   })
   $axios.onError((error) => {
     if (error.response.status === 401) {
-      redirect('/logout')
+      store.commit(`lastAuthFailedPage/set`, route.path)
+      redirect('/login')
     }
   })
 }

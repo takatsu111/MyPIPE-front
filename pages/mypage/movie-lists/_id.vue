@@ -168,6 +168,7 @@
 import draggable from 'vuedraggable'
 
 export default {
+  middleware: ['checkLoggedIn'],
   components: {
     draggable,
   },
