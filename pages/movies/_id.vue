@@ -56,12 +56,12 @@
     <v-row>
       <v-col>
         <v-form v-model="valid" @submit.prevent="postComment">
-          <v-text-field
+          <v-textarea
             v-model="comment"
+            filled
             name="comment"
-            label="コメントを投稿"
-            required
-          ></v-text-field>
+            label="コメントを入力"
+          ></v-textarea>
           <v-btn
             v-show="postCommentInProgress"
             width="120px"
@@ -83,10 +83,6 @@
             class="mr-4 mb-8"
             >投稿</v-btn
           >
-          <ServerErrorMessage
-            v-show="postCommentError"
-            message="コメントの投稿に失敗しました"
-          />
         </v-form>
         <v-divider></v-divider>
         <v-list three-line>
@@ -104,7 +100,7 @@
 
               <v-list-item-content>
                 <div>
-                  <div class="mb-5">
+                  <div class="mb-2">
                     <span
                       class="d-inline-block px-2 py-1 rounded"
                       style="background-color: rgba(0, 0, 0, 0.15)"
@@ -112,7 +108,9 @@
                       {{ comment.user_name }}
                     </span>
                   </div>
-                  <div>{{ comment.comment_body }}</div>
+                  <div style="white-space: pre-line">
+                    {{ comment.comment_body }}
+                  </div>
                 </div>
               </v-list-item-content>
             </v-list-item>
@@ -154,7 +152,7 @@ export default {
       movie: null,
       likeCount: null,
       userPostedMovie: null,
-      comment: null,
+      comment: '',
       postCommentInProgress: false,
       postCommentError: false,
       liked: false,
@@ -197,7 +195,7 @@ export default {
       this.player = videojs(this.$refs.videoPlayer, this.options)
     },
     async postComment() {
-      if (this.comment === null) {
+      if (this.comment === '') {
         return
       }
 
@@ -207,20 +205,11 @@ export default {
       const data = this
       const movieId = this.movieId
       const comment = this.comment
-      const config = {
-        headers: {
-          Authorization: 'Bearer xxx',
-        },
-      }
       await this.$axios
-        .$post(
-          '/auth/api/v1/comments',
-          {
-            movie_id: movieId,
-            comment_body: comment,
-          },
-          config
-        )
+        .$post('/auth/api/v1/comments', {
+          movie_id: movieId,
+          comment_body: comment,
+        })
         .then((res) => {
           data.getMovieAndComments()
           data.comment = null
