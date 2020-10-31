@@ -23,17 +23,21 @@
         <video
           ref="videoPlayer"
           class="video-js vjs-big-play-centered vjs-16-9"
+          controls
         ></video>
       </v-col>
     </v-row>
     <v-row v-if="movie !== null" style="min-height: 3em">
       <v-col cols="12">
         <v-img
+          v-if="userPostedMovie.ProfileImageName !== ''"
           width="50px"
           height="50px"
           class="mx-auto"
-          src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
+          style="border-radius: 50%"
+          :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${userPostedMovie.ID}/${userPostedMovie.ProfileImageName}`"
         ></v-img>
+        <v-icon v-else style="font-size: 40px">mdi-account-circle</v-icon>
       </v-col>
       <v-col v-if="movie !== null" cols="12" class="text-center">
         <h2>{{ userPostedMovie.Name }}</h2>
@@ -90,8 +94,12 @@
             <v-list-item :key="comment.comment_id">
               <v-list-item-avatar>
                 <v-img
-                  src="https://imgsv.nikon-image.com/products/mirrorless/lineup/z_50/img/sample/pic_01_l.jpg"
+                  v-if="comment.user_profile_image_name !== ''"
+                  :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${comment.user_id}/${comment.user_profile_image_name}`"
                 ></v-img>
+                <v-icon v-else style="font-size: 40px"
+                  >mdi-account-circle</v-icon
+                >
               </v-list-item-avatar>
 
               <v-list-item-content>
@@ -161,7 +169,7 @@ export default {
       const userId = JSON.parse(decodeURIComponent(escape(window.atob(base64))))
         .id
       const evaluated = await this.$axios.$get(
-        `http://localhost/evaluated?user_id=${userId}&movie_id=${this.movieId}`
+        `/evaluated?user_id=${userId}&movie_id=${this.movieId}`
       )
       if (evaluated.evaluated === 'true') {
         this.liked = true
@@ -174,7 +182,7 @@ export default {
     async getMovieAndComments() {
       const movieAndComments = JSON.parse(
         await this.$axios.$get(
-          `http://localhost/api/v1/movie-and-comments?movie_id=${this.movieId}`
+          `/api/v1/movie-and-comments?movie_id=${this.movieId}`
         )
       )
 
@@ -184,14 +192,9 @@ export default {
       this.likeCount = movieAndComments.movie_like_count
 
       this.options.sources[0].src = `http://d100q3wt0wdr5h.cloudfront.net/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
+      // this.options.liveui = true
 
-      this.player = videojs(
-        this.$refs.videoPlayer,
-        this.options,
-        function onPlayerReady() {
-          console.log('onPlayerReady', this)
-        }
-      )
+      this.player = videojs(this.$refs.videoPlayer, this.options)
     },
     async postComment() {
       if (this.comment === null) {
@@ -211,7 +214,7 @@ export default {
       }
       await this.$axios
         .$post(
-          'http://localhost/auth/api/v1/comments',
+          '/auth/api/v1/comments',
           {
             movie_id: movieId,
             comment_body: comment,
@@ -234,7 +237,7 @@ export default {
         evaluate,
       }
       await this.$axios
-        .$post('http://localhost/auth/api/v1/evaluates', requestData)
+        .$post('/auth/api/v1/evaluates', requestData)
         .then(() => {
           if (evaluate === 'good') {
             this.likeCount += 1

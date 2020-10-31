@@ -63,7 +63,15 @@
         <v-row>
           <v-col cols="4">
             <v-img
-              :src="`https://d100q3wt0wdr5h.cloudfront.net/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_thumbnail_name}`"
+              v-if="playList.play_list_thumbnail_name === ''"
+              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_first_movie_thumbnail_name}`"
+              width="100%"
+              aspect-ratio="1.77"
+              contain
+            ></v-img>
+            <v-img
+              v-else
+              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_thumbnail_movie_id}${playList.play_list_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
               contain
@@ -116,7 +124,7 @@ export default {
   methods: {
     async getPlayLists() {
       const responseData = JSON.parse(
-        await this.$axios.$get('http://localhost/auth/api/v1/play-lists')
+        await this.$axios.$get('/auth/api/v1/play-lists')
       )
 
       this.playLists = responseData.play_lists
@@ -131,7 +139,7 @@ export default {
       const that = this
 
       await this.$axios
-        .$post('http://localhost/auth/api/v1/play-lists', requestData)
+        .$post('/auth/api/v1/play-lists', requestData)
         .then((response) => {
           this.createPlayListDialog = false
           this.completeCreatePlayListNotification = true
@@ -149,7 +157,7 @@ export default {
     async deletePlayList() {
       try {
         await this.$axios.$delete(
-          `http://localhost/auth/api/v1/play-lists?play_list_id=${this.playListIdToDelete}`
+          `/auth/api/v1/play-lists?play_list_id=${this.playListIdToDelete}`
         )
         this.confirmDeletePlayList = false
         await this.getPlayLists()
