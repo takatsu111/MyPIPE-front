@@ -22,10 +22,10 @@
                 v-model="newPlayListName"
                 label="再生リスト名"
               ></v-text-field>
-              <v-text-field
+              <v-textarea
                 v-model="newPlayListDescription"
                 label="再生リストの説明"
-              ></v-text-field>
+              ></v-textarea>
               <v-btn @click="createPlayLists">作成</v-btn>
             </v-form>
           </v-card>
@@ -81,9 +81,8 @@
             <div class="mb-1" style="max-height: 1.5em">
               {{ playList.play_list_name }}
             </div>
-            <div style="max-height: 6em; font-size: 0.9em; overflow: hidden">
-              {{ playList.play_list_description }}
-            </div>
+            <!-- prettier-ignore -->
+            <div style="max-height: 6em; font-size: 0.9em; overflow: hidden; white-space: pre-line">{{ playList.play_list_description }}</div>
           </v-col>
         </v-row>
       </v-card>

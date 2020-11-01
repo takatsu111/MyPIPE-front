@@ -28,9 +28,58 @@
             ></v-img>
           </v-col>
           <v-col cols="6">
-            <div class="mb-4">{{ playList.play_list_name }}</div>
+            <div class="mb-4">
+              <v-icon @click="editPlayListTitleDialog = true">mdi-pencil</v-icon
+              >{{ playList.play_list_name }}
+            </div>
+            <v-dialog
+              v-model="editPlayListTitleDialog"
+              persistent
+              max-width="900px"
+            >
+              <v-card class="px-10 py-3" style="position: relative">
+                <v-btn
+                  icon
+                  style="position: absolute; top: 5px; right: 5px"
+                  @click="closeEditPlayListDialog"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-form v-model="valid">
+                  <v-text-field
+                    v-model="newPlayListName"
+                    label="再生リスト名"
+                  ></v-text-field>
+                  <v-btn @click="updatePlayListName">更新</v-btn>
+                </v-form>
+              </v-card>
+            </v-dialog>
+            <v-dialog
+              v-model="editPlayListDescriptionDialog"
+              persistent
+              max-width="900px"
+            >
+              <v-card class="px-10 py-3" style="position: relative">
+                <v-btn
+                  icon
+                  style="position: absolute; top: 5px; right: 5px"
+                  @click="closeEditPlayListDialog"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-form v-model="valid">
+                  <v-textarea
+                    v-model="newPlayListDescription"
+                    label="再生リストの説明"
+                  ></v-textarea>
+                  <v-btn @click="updatePlayListDescription">更新</v-btn>
+                </v-form>
+              </v-card>
+            </v-dialog>
             <!-- prettier-ignore -->
-            <div style="font-size: 0.9em; white-space: pre-line">{{ playList.play_list_description }}</div>
+            <div style="font-size: 0.9em; white-space: pre-line"><v-icon @click="editPlayListDescriptionDialog = true"
+              >mdi-pencil</v-icon
+            >{{ playList.play_list_description }}</div>
           </v-col>
         </v-row>
       </v-sheet>
@@ -71,15 +120,6 @@
           class="mx-auto px-4"
           style="background: #f2f2f2; position: relative"
         >
-          <!-- <v-btn
-            class="mx-2"
-            icon
-            style="position: absolute; top: 8px; right: 0"
-            @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
-          >
-            <v-icon> mdi-menu </v-icon>
-          </v-btn> -->
-
           <v-menu offset-y>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -97,6 +137,14 @@
                 @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
               >
                 <v-list-item-title>再生リストから削除</v-list-item-title>
+              </v-list-item>
+              <v-list-item
+                style="cursor: pointer"
+                @click="setPlayListThumbnail(playListMovie.movie_id)"
+              >
+                <v-list-item-title
+                  >再生リストのサムネイルに設定</v-list-item-title
+                >
               </v-list-item>
             </v-list>
           </v-menu>
@@ -179,6 +227,10 @@ export default {
   },
   data() {
     return {
+      editPlayListTitleDialog: false,
+      editPlayListDescriptionDialog: false,
+      newPlayListName: '',
+      newPlayListDescription: '',
       playListMovies: [],
       initialplaylistMovies: [],
       playList: null,
@@ -202,6 +254,87 @@ export default {
         this.playListMovies = responseData.play_list_movies
         this.initialplaylistMovies = this.playListMovies
         this.playList = responseData.play_list
+        this.newPlayListName = this.playList.play_list_name
+        this.newPlayListDescription = this.playList.play_list_description
+      }
+    },
+    closeEditPlayListDialog() {
+      this.editPlayListTitleDialog = false
+      this.editPlayListDescriptionDialog = false
+      this.newPlayListName = this.playList.play_list_name
+      this.newPlayListDescription = this.playList.play_list_description
+    },
+    async updatePlayListName() {
+      const requestData = {
+        play_list_id: this.playListId,
+        play_list_name: this.newPlayListName,
+        play_list_description: this.playList.play_list_description,
+        play_list_thumbnail_movie_id: this.playList
+          .play_list_thumbnail_movie_id,
+      }
+      try {
+        await this.$axios.$put(`/auth/api/v1/play-lists`, requestData)
+        this.playList.play_list_name = this.newPlayListName
+        this.newPlayListName = this.playList.play_list_name
+        this.newPlayListDescription = this.playList.play_list_description
+        this.closeEditPlayListDialog()
+        this.$nuxt.$emit('showMessage', '変更が完了しました。')
+      } catch {
+        this.$nuxt.$emit(
+          'showMessage',
+          '変更に失敗しました。再度試してください。'
+        )
+      }
+    },
+    async updatePlayListDescription() {
+      const requestData = {
+        play_list_id: this.playListId,
+        play_list_name: this.playList.play_list_name,
+        play_list_description: this.newPlayListDescription,
+        play_list_thumbnail_movie_id: this.playList
+          .play_list_thumbnail_movie_id,
+      }
+      try {
+        await this.$axios.$put(`/auth/api/v1/play-lists`, requestData)
+        this.playList.play_list_description = this.newPlayListDescription
+        this.newPlayListName = this.playList.play_list_name
+        this.newPlayListDescription = this.playList.play_list_description
+        this.closeEditPlayListDialog()
+        this.$nuxt.$emit('showMessage', '変更が完了しました。')
+      } catch {
+        this.$nuxt.$emit(
+          'showMessage',
+          '変更に失敗しました。再度試してください。'
+        )
+      }
+    },
+    async setPlayListThumbnail(movieId) {
+      const requestData = {
+        play_list_id: this.playListId,
+        play_list_name: this.playList.play_list_name,
+        play_list_description: this.playList.play_list_description,
+        play_list_thumbnail_movie_id: movieId,
+      }
+      try {
+        await this.$axios.$put(`/auth/api/v1/play-lists`, requestData)
+        const responseData = JSON.parse(
+          await this.$axios.$get(
+            `/auth/api/v1/play-list-items/${this.playListId}`
+          )
+        )
+        if (responseData !== null) {
+          this.playList.play_list_thumbnail_movie_id =
+            responseData.play_list.play_list_thumbnail_movie_id
+          this.playList.play_list_thumbnail_name =
+            responseData.play_list.play_list_thumbnail_name
+        }
+        this.closeEditPlayListDialog()
+        this.$nuxt.$emit('showMessage', 'サムネイルの設定が完了しました。')
+      } catch {
+        this.$nuxt.$emit(
+          'showMessage',
+          'サムネイルの設定に失敗しました。再度試してください。'
+        )
       }
     },
     updatePlayListMoviesOrder() {
