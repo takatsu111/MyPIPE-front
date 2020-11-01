@@ -59,9 +59,11 @@
       :items="movies"
       :items-per-page="5"
       class="elevation-1"
+      mobile-breakpoint="900"
     >
       <template v-slot:item.thumbnail="{ item }">
         <v-img
+          v-if="item.movie_thumbnail_status !== 0"
           width="200px"
           height="120px"
           :src="
@@ -73,7 +75,14 @@
           "
           contain
         ></v-img>
+        <v-img
+          v-else
+          width="200px"
+          height="120px"
+          :src="require('@/assets/image/thumbnail_processing.png')"
+        ></v-img>
         <v-btn
+          width="200px"
           class="mb-5"
           @click="
             openChangeThumbnailDialog(
@@ -87,7 +96,7 @@
           >サムネイルを変更する</v-btn
         >
       </template>
-      <template v-slot:item.movie_name="{ item }">
+      <!-- <template v-slot:item.movie_name="{ item }">
         <v-btn
           icon
           @click="
@@ -103,23 +112,75 @@
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
         <span>{{ item.movie_name }}</span>
-      </template>
+      </template> -->
       <template v-slot:item.movie_description="{ item }">
-        <v-btn
-          icon
-          @click="
-            openChangeDescriptionDialog(
-              item.movie_id,
-              item.movie_name,
-              item.movie_description,
-              item.movie_public,
-              item.movie_status
-            )
-          "
-        >
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <span>{{ item.movie_description }}</span>
+        <div class="mb-0" style="display: flex; align-items: flex-start">
+          <v-btn
+            icon
+            @click="
+              openChangeTitleDialog(
+                item.movie_id,
+                item.movie_name,
+                item.movie_description,
+                item.movie_public,
+                item.movie_status
+              )
+            "
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+
+          <template v-if="item.movie_name">
+            <span
+              style="
+                padding: 7px 0;
+                line-height: 1.5em;
+                max-height: calc(7.5em + 7px);
+              "
+            >
+              {{ item.movie_name }}
+            </span>
+          </template>
+          <template v-else>
+            <span style="color: lightslategray; padding: 7px 0">
+              タイトルを設定
+            </span>
+          </template>
+        </div>
+        <div style="display: flex; align-items: flex-start">
+          <v-btn
+            icon
+            @click="
+              openChangeDescriptionDialog(
+                item.movie_id,
+                item.movie_name,
+                item.movie_description,
+                item.movie_public,
+                item.movie_status
+              )
+            "
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <template v-if="item.movie_description">
+            <!-- prettier-ignore -->
+            <span
+              style="
+                padding: 7px 0;
+                line-height: 1.5em;
+                max-height: calc(7.5em + 7px);
+                overflow: hidden;
+                white-space: pre-line;
+                text-align: left
+              "
+            >{{ item.movie_description }}</span>
+          </template>
+          <template v-else>
+            <span style="color: lightslategray; padding: 7px 0"
+              >概要を設定</span
+            >
+          </template>
+        </div>
       </template>
       <template v-slot:item.movie_status="{ item }">
         <template v-if="item.movie_status === 0">
@@ -175,16 +236,6 @@
           </v-btn>
         </template>
       </template>
-      <template v-slot:item.action="{ item }">
-        <v-btn
-          class="mr-2"
-          color="primary"
-          @click="openEditModal(item.id, item.movie_name, item.description)"
-        >
-          編集
-        </v-btn>
-        <v-btn color="error"> 削除 </v-btn>
-      </template>
     </v-data-table>
 
     <v-dialog v-model="editDialog" width="1000px" persistent>
@@ -228,7 +279,7 @@
         <v-form
           ref="form"
           v-model="valid"
-          class="px-15 py-5"
+          class="px-8 py-5"
           lazy-validation
           @submit.prevent
         >
@@ -252,7 +303,7 @@
         <v-form
           ref="form"
           v-model="valid"
-          class="px-15 py-5"
+          class="px-8 py-5"
           lazy-validation
           @submit.prevent
         >
@@ -376,10 +427,11 @@ export default {
       headers: [
         { text: 'サムネイル', value: 'thumbnail' },
         {
-          text: 'タイトル',
-          value: 'movie_name',
+          text: 'タイトル/概要',
+          value: 'movie_description',
+          sortable: false,
+          align: 'end',
         },
-        { text: '概要', value: 'movie_description' },
         { text: '進行状況', value: 'movie_status' },
         { text: '公開/非公開', value: 'movie_public' },
         { text: '投稿日', value: 'movie_created_at' },
@@ -440,14 +492,9 @@ export default {
       this.editMovieThumbnailDialog = true
     },
     openChangePublicDialog(id, title, description, publicStatus, status) {
-      if (title === '') {
-        this.errorMessage = '動画タイトルを設定してください。'
-        this.errorMessageDialogOpen = true
-        return
-      }
-      if (status !== 1) {
+      if (title === '' || status !== 1) {
         this.errorMessage =
-          '進捗状況が「Complete」ではない動画は公開できません。'
+          'タイトルが未設定または進捗状況が「Complete」ではない動画は公開できません。'
         this.errorMessageDialogOpen = true
         return
       }
@@ -516,9 +563,13 @@ export default {
           data.editMoviePublic = 0
           data.editMovieStatus = 0
           data.getMovies()
+          data.$nuxt.$emit('showMessage', '変更が完了しました。')
         })
-        .catch(function (error) {
-          console.log(error)
+        .catch(function () {
+          data.$nuxt.$emit(
+            'showMessage',
+            '変更に失敗しました。再度試してください。'
+          )
         })
 
       this.newDialogButtonEnable = true
@@ -579,3 +630,58 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+// サムネイル
+table
+  > tbody
+  > tr.v-data-table__mobile-table-row
+  > td.v-data-table__mobile-row:first-child {
+  height: 200px !important;
+}
+
+// // タイトル
+// table
+//   > tbody
+//   > tr.v-data-table__mobile-table-row
+//   > td.v-data-table__mobile-row:nth-child(2) {
+//   height: 200px !important;
+// }
+
+// table
+//   > tbody
+//   > tr.v-data-table__mobile-table-row
+//   > td.v-data-table__mobile-row:nth-child(2)
+//   > div:nth-child(2) {
+//   width: 60% !important;
+//   max-height: 200px !important;
+//   overflow: scroll !important;
+// }
+
+// タイトル・概要
+table > tbody > tr > td:nth-child(2) {
+  width: 40% !important;
+}
+
+table
+  > tbody
+  > tr.v-data-table__mobile-table-row
+  > td.v-data-table__mobile-row:nth-child(2) {
+  height: 200px !important;
+  width: 100% !important;
+}
+
+table
+  > tbody
+  > tr.v-data-table__mobile-table-row
+  > td.v-data-table__mobile-row:nth-child(2)
+  > div:nth-child(2) {
+  width: 60% !important;
+  max-height: 200px !important;
+}
+
+//進捗
+table > tbody > tr > td:nth-child(3) {
+  min-width: 160px !important;
+}
+</style>
