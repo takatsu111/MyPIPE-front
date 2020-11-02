@@ -39,7 +39,7 @@
       justify="center"
     >
       <v-card
-        height="180px"
+        min-height="180px"
         max-width="900px"
         width="90%"
         class="px-3"
@@ -55,15 +55,25 @@
           dark
           small
           color="pink"
-          style="position: absolute; top: -20px; right: -20px"
+          style="position: absolute; top: -30px; right: -20px"
           @click.prevent.stop="openDeleteDialog(playList.play_list_id)"
         >
           <v-icon dark> mdi-close </v-icon>
         </v-btn>
         <v-row>
-          <v-col cols="4">
+          <v-col cols="12" xs="12" sm="4" md="4" lg="4" xl="4">
             <v-img
-              v-if="playList.play_list_thumbnail_name === ''"
+              v-if="
+                playList.play_list_thumbnail_name === '' &&
+                !playList.play_list_first_movie_id
+              "
+              :src="require('@/assets/image/no_thumbnail.png')"
+              width="100%"
+              aspect-ratio="1.77"
+              contain
+            ></v-img>
+            <v-img
+              v-else-if="playList.play_list_thumbnail_name === ''"
               :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_first_movie_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
@@ -77,7 +87,7 @@
               contain
             ></v-img>
           </v-col>
-          <v-col cols="8">
+          <v-col cols="12" xs="12" sm="8" md="8" lg="8" xl="8">
             <div class="mb-1" style="max-height: 1.5em">
               {{ playList.play_list_name }}
             </div>

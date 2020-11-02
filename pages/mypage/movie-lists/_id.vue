@@ -5,13 +5,23 @@
         v-if="playList != null"
         width="90%"
         max-width="900px"
-        max-height="280px"
+        min-height="280px"
         class="mb-5"
       >
         <v-row>
-          <v-col cols="6">
+          <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
             <v-img
-              v-if="playList.play_list_thumbnail_name !== ''"
+              v-if="
+                playList.play_list_thumbnail_name === '' &&
+                playList.play_list_first_movie_id === 0
+              "
+              :src="require('@/assets/image/no_thumbnail.png')"
+              width="100%"
+              aspect-ratio="1.77"
+              contain
+            ></v-img>
+            <v-img
+              v-else-if="playList.play_list_thumbnail_name !== ''"
               :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_thumbnail_movie_id}${playList.play_list_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
@@ -27,10 +37,12 @@
               contain
             ></v-img>
           </v-col>
-          <v-col cols="6">
-            <div class="mb-4">
-              <v-icon @click="editPlayListTitleDialog = true">mdi-pencil</v-icon
-              >{{ playList.play_list_name }}
+          <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
+            <div class="mb-4" style="display: flex; align-items: flex-start">
+              <v-icon @click="editPlayListTitleDialog = true"
+                >mdi-pencil</v-icon
+              >
+              <span>{{ playList.play_list_name }}</span>
             </div>
             <v-dialog
               v-model="editPlayListTitleDialog"
@@ -77,7 +89,7 @@
               </v-card>
             </v-dialog>
             <!-- prettier-ignore -->
-            <div style="font-size: 0.9em; white-space: pre-line"><v-icon @click="editPlayListDescriptionDialog = true"
+            <div style="font-size: 0.9em; white-space: pre-line; display: flex; align-items: flex-start"><v-icon @click="editPlayListDescriptionDialog = true"
               >mdi-pencil</v-icon
             >{{ playList.play_list_description }}</div>
           </v-col>
@@ -111,46 +123,25 @@
         :key="playListMovie.movie_id"
         cols="12"
         class="py-0"
-        style="height: 160px"
+        style="min-height: 160px"
       >
         <v-sheet
           width="90%"
-          height="100%"
           max-width="900px"
           class="mx-auto px-4"
-          style="background: #f2f2f2; position: relative"
+          style="background: #f2f2f2"
         >
-          <v-menu offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                style="position: absolute; top: 0; right: 0"
-                v-on="on"
-              >
-                <v-icon> mdi-menu </v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                style="cursor: pointer"
-                @click="openDeletePlayListMovieDialog(playListMovie.movie_id)"
-              >
-                <v-list-item-title>再生リストから削除</v-list-item-title>
-              </v-list-item>
-              <v-list-item
-                style="cursor: pointer"
-                @click="setPlayListThumbnail(playListMovie.movie_id)"
-              >
-                <v-list-item-title
-                  >再生リストのサムネイルに設定</v-list-item-title
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
           <v-row style="height: 100%">
-            <v-col cols="4" class="py-1" style="height: 100%">
+            <v-col
+              cols="4"
+              xs="4"
+              sm="4"
+              md="4"
+              lg="4"
+              xl="4"
+              class="py-1"
+              style="height: 100%"
+            >
               <nuxt-link
                 :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`"
               >
@@ -165,7 +156,46 @@
                 ></v-img>
               </nuxt-link>
             </v-col>
-            <v-col cols="8" style="height: 100%">
+            <v-col
+              cols="8"
+              xs="8"
+              sm="8"
+              md="8"
+              lg="8"
+              xl="8"
+              class="pb-10"
+              style="height: 100%; position: relative"
+            >
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    v-bind="attrs"
+                    style="position: absolute; top: 0; right: 0"
+                    v-on="on"
+                  >
+                    <v-icon> mdi-menu </v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    style="cursor: pointer"
+                    @click="
+                      openDeletePlayListMovieDialog(playListMovie.movie_id)
+                    "
+                  >
+                    <v-list-item-title>再生リストから削除</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    style="cursor: pointer"
+                    @click="setPlayListThumbnail(playListMovie.movie_id)"
+                  >
+                    <v-list-item-title
+                      >再生リストのサムネイルに設定</v-list-item-title
+                    >
+                  </v-list-item>
+                </v-list>
+              </v-menu>
               <div
                 style="
                   width: 90%;
@@ -182,14 +212,14 @@
               </div>
               <!-- prettier-ignore -->
               <div style="font-size: 0.9em; max-height: 4.5em; overflow: hidden; white-space: pre-line"><nuxt-link style="color: black" :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`">{{ playListMovie.movie_description }}</nuxt-link></div>
+              <v-btn
+                class="draggable-button"
+                style="position: absolute; bottom: 5px; right: 10px"
+              >
+                <v-icon> mdi-arrow-up-down-bold </v-icon>
+              </v-btn>
             </v-col>
           </v-row>
-          <v-btn
-            class="draggable-button"
-            style="position: absolute; bottom: 10px; right: 10px"
-          >
-            <v-icon> mdi-arrow-up-down-bold </v-icon>
-          </v-btn>
         </v-sheet>
       </v-col>
     </draggable>
