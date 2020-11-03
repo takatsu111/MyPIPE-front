@@ -53,6 +53,64 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-row>
+    <v-card v-if="this.playListMovies.length !== 0">
+      <v-card-title>
+        <div
+          class="title font-weight-light"
+          style="
+            max-width: 80%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            position: relative;
+          "
+        >
+          <v-icon large left> mdi-playlist-play </v-icon>
+          {{ playList.play_list_name }}
+        </div>
+        <v-spacer></v-spacer>
+        <v-icon v-if="autoPlay" large @click="stopAutoPlay"> mdi-pause </v-icon>
+        <v-icon v-else large @click="startAutoPlay"> mdi-play </v-icon>
+      </v-card-title>
+      <div style="max-height: 420px; overflow: scroll; width: 100%">
+        <v-row
+          v-for="playListMovie in this.playListMovies"
+          :key="playListMovie.movie_id"
+          style="height: 140px; cursor: pointer"
+          :class="{
+            'watching-movie':
+              Number($route.params.id) === playListMovie.movie_id,
+          }"
+          @click="selectMovie(playListMovie.movie_id)"
+        >
+          <v-col cols="4" style="height: 100%">
+            <v-img
+              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
+              width="90%"
+              height="100%"
+              aspect-ratio="1.77"
+              class="thumbnail-img"
+              position="center"
+              contain
+            ></v-img>
+          </v-col>
+          <v-col cols="8" style="height: 100%">
+            <div
+              class="mb-2"
+              style="line-height: 1.5em; max-height: 4.5em; overflow: hidden"
+            >
+              {{ playListMovie.movie_title }}
+            </div>
+            <div
+              class="mb-2"
+              style="line-height: 1.5em; max-height: 4.5em; overflow: hidden"
+            >
+              {{ playListMovie.movie_description }}
+            </div>
+          </v-col>
+        </v-row>
+      </div>
+    </v-card>
     <v-row>
       <v-col>
         <v-form v-model="valid" @submit.prevent="postComment">
@@ -156,6 +214,11 @@ export default {
       postCommentInProgress: false,
       postCommentError: false,
       liked: false,
+      playListMovies: [],
+      playList: null,
+      nextMovieId: null,
+      movieEnded: false,
+      autoPlay: true,
     }
   },
   async mounted() {
@@ -174,7 +237,11 @@ export default {
       } else {
         this.liked = false
       }
+      if (this.$route.query['play-list-id'] !== undefined) {
+        await this.getPlayListMovies(this.$route.query['play-list-id'])
+      }
     }
+    this.getNextMovie()
   },
   methods: {
     async getMovieAndComments() {
@@ -189,10 +256,72 @@ export default {
       this.userPostedMovie = movieAndComments.posted_user
       this.likeCount = movieAndComments.movie_like_count
 
+      console.log('↓')
+      console.log(this.$refs.videoPlayer)
+      console.log('↑')
       this.options.sources[0].src = `http://d100q3wt0wdr5h.cloudfront.net/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
-      // this.options.liveui = true
 
-      this.player = videojs(this.$refs.videoPlayer, this.options)
+      if (this.$refs.videoPlayer === undefined) {
+        location.reload()
+        return
+      }
+      const self = this
+      this.player = videojs(this.$refs.videoPlayer, this.options).ready(
+        function () {
+          const player = this
+          player.on('ended', function () {
+            self.movieEnded = true
+            self.openNextMovie()
+          })
+        }
+      )
+    },
+    async getPlayListMovies(playListId) {
+      const responseData = JSON.parse(
+        await this.$axios.$get(`/auth/api/v1/play-list-items/${playListId}`)
+      )
+      if (responseData !== null) {
+        this.playListMovies = responseData.play_list_movies
+        this.initialplaylistMovies = this.playListMovies
+        this.playList = responseData.play_list
+      }
+    },
+    getNextMovie() {
+      if (this.playListMovies.length !== 0) {
+        const nowMovieId = Number(this.$route.params.id)
+        for (let i = 0; i < this.playListMovies.length; i++) {
+          if (
+            nowMovieId === this.playListMovies[i].movie_id &&
+            this.playListMovies[i + 1] !== undefined
+          ) {
+            this.nextMovieId = this.playListMovies[i + 1].movie_id
+            break
+          }
+        }
+      }
+    },
+    stopAutoPlay() {
+      this.autoPlay = false
+      this.$nuxt.$emit('showMessage', '自動再生を停止しました。')
+    },
+    startAutoPlay() {
+      this.autoPlay = true
+      this.$nuxt.$emit('showMessage', '自動再生を再開しました。')
+      if (this.movieEnded) {
+        this.openNextMovie()
+      }
+    },
+    openNextMovie() {
+      if (this.nextMovieId && this.autoPlay) {
+        this.$router.push(
+          `/movies/${this.nextMovieId}?play-list-id=${this.$route.query['play-list-id']}`
+        )
+      }
+    },
+    selectMovie(movieId) {
+      this.$router.push(
+        `/movies/${movieId}?play-list-id=${this.$route.query['play-list-id']}`
+      )
     },
     async postComment() {
       if (this.comment === '') {
@@ -246,35 +375,8 @@ export default {
 }
 </script>
 
-<style>
-/* .container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+<style scoped lang="scss">
+.watching-movie {
+  background: #f2f2f2;
 }
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-} */
 </style>

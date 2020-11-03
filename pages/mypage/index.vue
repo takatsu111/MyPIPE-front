@@ -83,17 +83,15 @@
             v-validate="'required'"
             label="名前"
           ></v-text-field>
-          <div v-for="error in errors.name" :key="error" class="mb-5">
+          <div
+            v-for="error in errors.name"
+            :key="error"
+            class="mb-5"
+            style="font-size: 14px; color: red"
+          >
             {{ error }}
           </div>
           <v-btn @click="changeName">名前を変更</v-btn>
-        </div>
-        <div class="mb-10" width="100%">
-          <v-text-field v-model="email" label="メールアドレス"></v-text-field>
-          <div v-for="error in errors.email" :key="error" class="mb-5">
-            {{ error }}
-          </div>
-          <v-btn @click="changeEmail">メールアドレスを変更</v-btn>
         </div>
         <div class="mb-10" width="100%">
           <v-text-field
@@ -101,7 +99,12 @@
             type="password"
             label="新しいパスワード"
           ></v-text-field>
-          <div v-for="error in errors.newPassword" :key="error" class="mb-5">
+          <div
+            v-for="error in errors.newPassword"
+            :key="error"
+            class="mb-5"
+            style="font-size: 14px; color: red"
+          >
             {{ error }}
           </div>
           <v-text-field
@@ -113,6 +116,7 @@
             v-for="error in errors.confirmNewPassword"
             :key="error"
             class="mb-5"
+            style="font-size: 14px; color: red"
           >
             {{ error }}
           </div>
@@ -255,20 +259,6 @@ export default {
         console.log(error)
       }
     },
-    changeEmail() {
-      this.errors.email = []
-      if (this.email.length === 0) {
-        this.errors.email.push('メールアドレスは必須です。')
-        return
-      }
-
-      const regex = RegExp(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )
-      if (!regex.test(this.email)) {
-        this.errors.email.push('メールアドレスを正しく入力してください。')
-      }
-    },
     async changePassword() {
       this.errors.newPassword = []
       this.errors.confirmNewPassword = []
@@ -284,6 +274,13 @@ export default {
 
       if (this.confirmNewPassword !== this.newPassword) {
         this.errors.confirmNewPassword.push('新しいパスワードと異なります。')
+      }
+
+      if (
+        this.errors.newPassword.length !== 0 ||
+        this.errors.confirmNewPassword.length !== 0
+      ) {
+        return
       }
 
       const requestData = {
