@@ -25,7 +25,7 @@
               :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_thumbnail_movie_id}${playList.play_list_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
-              position="left center"
+              position="center"
               contain
             ></v-img>
             <v-img
@@ -33,7 +33,7 @@
               :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_first_movie_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
-              position="left center"
+              position="center"
               contain
             ></v-img>
           </v-col>
@@ -151,7 +151,7 @@
                   height="100%"
                   aspect-ratio="1.77"
                   class="thumbnail-img"
-                  position="left center"
+                  position="center"
                   contain
                 ></v-img>
               </nuxt-link>
