@@ -10,7 +10,7 @@
             <v-col cols="12" md="10" sm="10">
               <v-text-field
                 v-model="email"
-                label="Eメールアドレス"
+                label="メールアドレス"
                 @keydown.enter="loginWithAuthModule"
               />
               <p class="caption mb-0" />
@@ -52,7 +52,10 @@ export default {
     }
   },
   methods: {
-    async loginWithAuthModule() {
+    async loginWithAuthModule(event) {
+      if (event.keyCode !== 13) {
+        return
+      }
       const self = this
       await this.$auth
         .loginWith('local', {
