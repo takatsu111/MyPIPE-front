@@ -8,6 +8,8 @@
           solo
           label="検索"
           prepend-inner-icon="mdi-magnify"
+          @keydown.enter="pagination"
+          @click:clear="showAll"
         >
           <template v-slot:append>
             <v-btn color="primary" @click="pagination">検索</v-btn>
@@ -200,7 +202,7 @@ export default {
     return {
       page: query.page === undefined ? 1 : parseInt(query.page),
       keyWord: query.keyWord === undefined ? '' : query.keyWord,
-      moviesOrderByPostedDay: query.order === undefined ? 'asc' : query.order,
+      moviesOrderByPostedDay: query.order === undefined ? 'desc' : query.order,
     }
   },
   data() {
@@ -218,7 +220,7 @@ export default {
       playLists: [],
       playListMovieModifing: false,
       menuClickedMovieId: null,
-      moviesOrderByPostedDay: 'asc',
+      moviesOrderByPostedDay: 'desc',
     }
   },
   computed: {
@@ -236,7 +238,7 @@ export default {
       this.keyWord = to.query.keyWord === undefined ? '' : to.query.keyWord
       this.page = to.query.page === undefined ? 1 : parseInt(to.query.page)
       this.moviesOrderByPostedDay =
-        to.query.order === undefined ? 'asc' : to.query.order
+        to.query.order === undefined ? 'desc' : to.query.order
       await this.getMovies()
     },
   },
@@ -262,7 +264,13 @@ export default {
       this.moviesOrderByPostedDay = order
       await this.pagination()
     },
-    async pagination() {
+    showAll() {
+      this.$router.push('/')
+    },
+    async pagination(event) {
+      if (event.keyCode !== 13) {
+        return
+      }
       this.$router.push(
         `?page=${this.page}&keyWord=${this.keyWord}&order=${this.moviesOrderByPostedDay}`
       )
