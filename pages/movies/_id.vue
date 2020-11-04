@@ -156,7 +156,35 @@
                 >
               </v-list-item-avatar>
 
-              <v-list-item-content>
+              <v-list-item-content style="position: relative">
+                <v-btn
+                  v-if="
+                    comment.user_id ===
+                    $store.state.loggedInUserId.loggedInUserId
+                  "
+                  icon
+                  style="position: absolute; right: 0; top: 0"
+                  @click="confirmDeleteComment(comment.comment_id)"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-dialog
+                  v-model="openDeleteCommentDialog"
+                  persistent
+                  max-width="300px"
+                >
+                  <v-card class="px-12 py-8">
+                    <div class="text-center mb-5">コメントを削除しますか？</div>
+                    <v-card-actions>
+                      <span style="display: inline-block" class="mx-auto">
+                        <v-btn text @click="deleteComment"> はい </v-btn>
+                        <v-btn text @click="closeConfirmDeleteComment">
+                          いいえ
+                        </v-btn>
+                      </span>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
                 <div>
                   <div class="mb-2">
                     <span
@@ -183,6 +211,7 @@
 <script>
 import videojs from 'video.js'
 export default {
+  middleware: ['getLoggedInUserId'],
   props: {
     options: {
       type: Object,
@@ -207,6 +236,8 @@ export default {
     return {
       player: null,
       comments: [],
+      openDeleteCommentDialog: false,
+      commentIdToDelete: null,
       movie: null,
       likeCount: null,
       userPostedMovie: null,
@@ -256,9 +287,6 @@ export default {
       this.userPostedMovie = movieAndComments.posted_user
       this.likeCount = movieAndComments.movie_like_count
 
-      console.log('↓')
-      console.log(this.$refs.videoPlayer)
-      console.log('↑')
       this.options.sources[0].src = `${this.$store.state.resourcesURL.resourcesURL}/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
 
       if (this.$refs.videoPlayer === undefined) {
@@ -266,14 +294,30 @@ export default {
         return
       }
       const self = this
-      this.player = videojs(this.$refs.videoPlayer, this.options).ready(
-        function () {
+      this.player = videojs(this.$refs.videoPlayer, this.options)
+        .ready(function () {
           const player = this
           player.on('ended', function () {
             self.movieEnded = true
             self.openNextMovie()
           })
-        }
+        })
+        .addLanguage('en', {
+          'The media could not be loaded, either because the server or network failed or because the format is not supported.':
+            'Could not load the video.',
+        })
+    },
+    confirmDeleteComment(commentId) {
+      this.commentIdToDelete = commentId
+      this.openDeleteCommentDialog = true
+    },
+    closeConfirmDeleteComment() {
+      this.commentIdToDelete = null
+      this.openDeleteCommentDialog = false
+    },
+    async deleteComment() {
+      await this.$axios.$delete(
+        `/auth/api/v1/comments?id=${this.commentIdToDelete}`
       )
     },
     async getPlayListMovies(playListId) {
