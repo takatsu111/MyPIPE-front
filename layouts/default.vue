@@ -19,7 +19,7 @@
       <v-list nav>
         <v-list-item>
           <v-list-item-title class="title" height="64">
-            Application
+            MENU
           </v-list-item-title>
           <v-spacer></v-spacer>
           <v-btn icon @click="drawer = !drawer">
