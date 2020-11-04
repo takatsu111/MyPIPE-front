@@ -28,19 +28,19 @@
         </v-list-item>
 
         <v-list-item-grout>
-          <v-list-item to="/">
+          <v-list-item to="/" @click="drawer = !drawer">
             <v-list-item-icon>
               <v-icon>mdi-web</v-icon>
             </v-list-item-icon>
             <v-list-item-title>動画一覧</v-list-item-title>
           </v-list-item>
-          <v-list-item to="/mypage/movies">
+          <v-list-item to="/mypage/movies" @click="drawer = !drawer">
             <v-list-item-icon>
               <v-icon>mdi-movie-open-outline</v-icon>
             </v-list-item-icon>
             <v-list-item-title>動画を投稿</v-list-item-title>
           </v-list-item>
-          <v-list-item to="/mypage/movie-lists">
+          <v-list-item to="/mypage/movie-lists" @click="drawer = !drawer">
             <v-list-item-icon>
               <v-icon>mdi-playlist-play</v-icon>
             </v-list-item-icon>
@@ -75,7 +75,7 @@
         </nuxt-link> -->
         <v-btn nuxt link to="/mypage" text
           ><span
-            style="width: 120px; overflow: hidden; text-transform: none"
+            style="width: 60px; overflow: hidden; text-transform: none"
             class="text-center"
             >{{ user.user_name }}</span
           ></v-btn
