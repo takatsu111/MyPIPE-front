@@ -268,7 +268,11 @@ export default {
       this.$router.push('/')
     },
     async pagination(event) {
-      if (event.keyCode !== 13) {
+      if (
+        event !== undefined &&
+        event.target.type === 'text' &&
+        event.keyCode !== 13
+      ) {
         return
       }
       this.$router.push(
