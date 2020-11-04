@@ -3,6 +3,7 @@
     <v-row justify="center" align="center">
       <v-col sm="12" lg="6">
         <v-text-field
+          ref="searchInput"
           v-model="keyWord"
           clearable
           solo
@@ -268,6 +269,7 @@ export default {
       await this.pagination()
     },
     showAll() {
+      this.$refs.searchInput.blur()
       this.$router.push('/')
     },
     async pagination(event) {
@@ -278,6 +280,7 @@ export default {
       ) {
         return
       }
+      this.$refs.searchInput.blur()
       this.$router.push(
         `?page=${this.page}&keyWord=${this.keyWord}&order=${this.moviesOrderByPostedDay}`
       )
