@@ -321,9 +321,17 @@ export default {
       this.openDeleteCommentDialog = false
     },
     async deleteComment() {
-      await this.$axios.$delete(
-        `/auth/api/v1/comments?id=${this.commentIdToDelete}`
-      )
+      try {
+        await this.$axios.$delete(
+          `/auth/api/v1/comments?comment_id=${this.commentIdToDelete}`
+        )
+        this.closeConfirmDeleteComment()
+        this.$nuxt.$emit('showMessage', 'コメントを削除しました。')
+        await this.getMovieAndComments()
+      } catch {
+        this.closeConfirmDeleteComment()
+        this.$nuxt.$emit('showMessage', 'コメントの削除が失敗しました。')
+      }
     },
     async getPlayListMovies(playListId) {
       const responseData = JSON.parse(
