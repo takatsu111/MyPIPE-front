@@ -156,7 +156,7 @@ export default {
   computed: {
     profileImageURL() {
       if (this.profileImageName) {
-        return `http://d100q3wt0wdr5h.cloudfront.net/profile_images/${this.id}/${this.profileImageName}`
+        return `${this.$store.state.resourcesURL.resourcesURL}/profile_images/${this.id}/${this.profileImageName}`
       }
       return ''
     },

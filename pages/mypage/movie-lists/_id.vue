@@ -22,7 +22,7 @@
             ></v-img>
             <v-img
               v-else-if="playList.play_list_thumbnail_name !== ''"
-              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_thumbnail_movie_id}${playList.play_list_thumbnail_name}`"
+              :src="`${$store.state.resourcesURL.resourcesURL}/resized-thumbnails/thumbnails/${playList.play_list_thumbnail_movie_id}${playList.play_list_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
               position="center"
@@ -30,7 +30,7 @@
             ></v-img>
             <v-img
               v-else
-              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_first_movie_thumbnail_name}`"
+              :src="`${$store.state.resourcesURL.resourcesURL}/resized-thumbnails/thumbnails/${playList.play_list_first_movie_id}${playList.play_list_first_movie_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
               position="center"
@@ -146,7 +146,7 @@
                 :to="`/movies/${playListMovie.movie_id}?play-list-id=${playList.play_list_id}`"
               >
                 <v-img
-                  :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
+                  :src="`${$store.state.resourcesURL.resourcesURL}/resized-thumbnails/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
                   width="100%"
                   height="100%"
                   aspect-ratio="1.77"

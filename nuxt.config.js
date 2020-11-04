@@ -57,8 +57,7 @@ export default {
       local: {
         endpoints: {
           login: {
-            url:
-              'https://api.frommymovies.com/login',
+            url: 'https://api.frommymovies.com/login',
             method: 'post',
             propertyName: 'token',
           },
@@ -72,8 +71,7 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     baseURL: 'https://api.frommymovies.com/',
-    browserBaseURL:
-      'https://api.frommymovies.com/',
+    browserBaseURL: 'https://api.frommymovies.com/',
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)

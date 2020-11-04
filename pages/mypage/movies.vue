@@ -67,7 +67,7 @@
           width="200px"
           height="120px"
           :src="
-            'http://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/' +
+            `${$store.state.resourcesURL.resourcesURL}/resized-thumbnails/thumbnails/` +
             item.movie_id +
             item.movie_thumbnail_name +
             '?cacheKey=' +
