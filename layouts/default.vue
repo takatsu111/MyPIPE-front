@@ -63,7 +63,7 @@
           max-height="50px"
           class="mr-3"
           style="border-radius: 50%"
-          :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${user.user_id}/${user.user_profile_image_name}`"
+          :src="`${$store.state.resourcesURL.resourcesURL}/profile_images/${user.user_id}/${user.user_profile_image_name}`"
         ></v-img>
         <v-icon v-else class="mr-3" style="font-size: 40px"
           >mdi-account-circle</v-icon

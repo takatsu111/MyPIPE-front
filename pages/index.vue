@@ -54,7 +54,7 @@
             :to="'/movies/' + movie.movie_id"
           >
             <v-img
-              :src="`http://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${movie.movie_id}${movie.movie_thumbnail_name}`"
+              :src="`${$store.state.resourcesURL.resourcesURL}/resized-thumbnails/thumbnails/${movie.movie_id}${movie.movie_thumbnail_name}`"
               width="100%"
               aspect-ratio="1.77"
               contain
@@ -69,7 +69,7 @@
                 <v-list-item-avatar>
                   <v-img
                     v-if="movie.user_profile_image_name !== ''"
-                    :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${movie.user_id}/${movie.user_profile_image_name}`"
+                    :src="`${$store.state.resourcesURL.resourcesURL}/profile_images/${movie.user_id}/${movie.user_profile_image_name}`"
                   ></v-img>
                   <v-icon v-else style="font-size: 40px"
                     >mdi-account-circle</v-icon

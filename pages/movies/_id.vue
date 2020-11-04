@@ -35,7 +35,7 @@
           height="50px"
           class="mx-auto"
           style="border-radius: 50%"
-          :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${userPostedMovie.ID}/${userPostedMovie.ProfileImageName}`"
+          :src="`${$store.state.resourcesURL.resourcesURL}/profile_images/${userPostedMovie.ID}/${userPostedMovie.ProfileImageName}`"
         ></v-img>
         <v-icon v-else style="font-size: 40px">mdi-account-circle</v-icon>
       </v-col>
