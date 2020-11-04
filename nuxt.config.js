@@ -58,7 +58,7 @@ export default {
         endpoints: {
           login: {
             url:
-              'http://MyMovies-1193229343.ap-northeast-1.elb.amazonaws.com/login',
+              'https://api.frommymovies.com/login',
             method: 'post',
             propertyName: 'token',
           },
@@ -71,9 +71,9 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://MyMovies-1193229343.ap-northeast-1.elb.amazonaws.com/',
+    baseURL: 'https://api.frommymovies.com/',
     browserBaseURL:
-      'http://MyMovies-1193229343.ap-northeast-1.elb.amazonaws.com/',
+      'https://api.frommymovies.com/',
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
