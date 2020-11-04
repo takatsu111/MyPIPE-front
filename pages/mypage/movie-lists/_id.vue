@@ -128,6 +128,7 @@
         <v-sheet
           width="90%"
           max-width="900px"
+          height="160px"
           class="mx-auto px-4"
           style="background: #f2f2f2"
         >
