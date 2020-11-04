@@ -72,7 +72,7 @@
         <v-icon v-if="autoPlay" large @click="stopAutoPlay"> mdi-pause </v-icon>
         <v-icon v-else large @click="startAutoPlay"> mdi-play </v-icon>
       </v-card-title>
-      <div style="max-height: 420px; overflow: scroll; width: 100%">
+      <div style="max-height: 350px; overflow: scroll; width: 100%">
         <v-row
           v-for="playListMovie in this.playListMovies"
           :key="playListMovie.movie_id"
