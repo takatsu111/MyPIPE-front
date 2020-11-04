@@ -85,7 +85,7 @@
         >
           <v-col cols="4" style="height: 100%">
             <v-img
-              :src="`https://d100q3wt0wdr5h.cloudfront.net/resized-thumbnails/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
+              :src="`${$store.state.resourcesURL.resourcesURL}/resized-thumbnails/thumbnails/${playListMovie.movie_id}${playListMovie.movie_thumbnail_name}`"
               width="90%"
               height="100%"
               aspect-ratio="1.77"
@@ -149,7 +149,7 @@
               <v-list-item-avatar>
                 <v-img
                   v-if="comment.user_profile_image_name !== ''"
-                  :src="`http://d100q3wt0wdr5h.cloudfront.net/profile_images/${comment.user_id}/${comment.user_profile_image_name}`"
+                  :src="`${$store.state.resourcesURL.resourcesURL}/profile_images/${comment.user_id}/${comment.user_profile_image_name}`"
                 ></v-img>
                 <v-icon v-else style="font-size: 40px"
                   >mdi-account-circle</v-icon
@@ -259,7 +259,7 @@ export default {
       console.log('↓')
       console.log(this.$refs.videoPlayer)
       console.log('↑')
-      this.options.sources[0].src = `http://d100q3wt0wdr5h.cloudfront.net/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
+      this.options.sources[0].src = `${this.$store.state.resourcesURL.resourcesURL}/encoded/${this.movieId}/${this.movieId}_mypipe.m3u8`
 
       if (this.$refs.videoPlayer === undefined) {
         location.reload()
