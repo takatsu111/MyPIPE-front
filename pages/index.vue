@@ -42,9 +42,12 @@
         <v-col
           v-for="movie in movies"
           :key="movie.movie_id"
-          cols="12"
           xl="2"
-          sm="4"
+          lg="3"
+          md="4"
+          sm="6"
+          xs="6"
+          cols="12"
         >
           <v-card
             class="mx-auto mb-7"
