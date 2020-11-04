@@ -294,18 +294,15 @@ export default {
         return
       }
       const self = this
-      this.player = videojs(this.$refs.videoPlayer, this.options)
-        .ready(function () {
+      this.player = videojs(this.$refs.videoPlayer, this.options).ready(
+        function () {
           const player = this
           player.on('ended', function () {
             self.movieEnded = true
             self.openNextMovie()
           })
-        })
-        .addLanguage('en', {
-          'The media could not be loaded, either because the server or network failed or because the format is not supported.':
-            'Could not load the video.',
-        })
+        }
+      )
     },
     confirmDeleteComment(commentId) {
       this.commentIdToDelete = commentId
