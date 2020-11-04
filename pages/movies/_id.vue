@@ -253,7 +253,10 @@ export default {
     }
   },
   async mounted() {
-    await this.getMovieAndComments()
+    const isPublic = await this.getMovieAndComments()
+    if (!isPublic) {
+      return
+    }
     if (this.$auth.loggedIn) {
       const token = this.$store.$auth.getToken('local')
       const base64Url = token.substr(7).split('.')[1]
@@ -282,8 +285,13 @@ export default {
         )
       )
 
-      this.comments = movieAndComments.comments
       this.movie = movieAndComments.movie
+      if (this.movie.Public !== 1) {
+        this.$router.push(`/`)
+        this.$nuxt.$emit('showMessage', '動画は再生できません。')
+        return false
+      }
+      this.comments = movieAndComments.comments
       this.userPostedMovie = movieAndComments.posted_user
       this.likeCount = movieAndComments.movie_like_count
 
