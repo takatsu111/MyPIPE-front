@@ -40,12 +40,6 @@
             </v-list-item-icon>
             <v-list-item-title>動画を投稿</v-list-item-title>
           </v-list-item>
-          <v-list-item to="/mypage/channels">
-            <v-list-item-icon>
-              <v-icon>mdi-playlist-plus</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>登録チャンネル一覧</v-list-item-title>
-          </v-list-item>
           <v-list-item to="/mypage/movie-lists">
             <v-list-item-icon>
               <v-icon>mdi-playlist-play</v-icon>
@@ -90,6 +84,7 @@
       </template>
       <template v-else>
         <v-btn nuxt link to="/login" text> ログイン </v-btn>
+        <v-btn nuxt link to="/new" text> 新規登録 </v-btn>
       </template>
       <span></span>
     </v-app-bar>
@@ -162,8 +157,12 @@ export default {
       this.$nuxt.$on('getUserData', this.getUserData)
     },
     showMessage(message) {
-      this.messageShown = true
-      this.showMessageText = message
+      this.messageShown = false
+      const self = this
+      this.$nextTick(() => {
+        self.messageShown = true
+        self.showMessageText = message
+      })
     },
     logout() {
       this.$auth.logout()
