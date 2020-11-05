@@ -52,10 +52,12 @@ export default {
     }
   },
   methods: {
-    async loginWithAuthModule(event) {
-      if (event.keyCode !== 13) {
-        return
+    async loginWithEnterKey(event) {
+      if (event.keyCode === 13) {
+        await this.loginWithAuthModule()
       }
+    },
+    async loginWithAuthModule() {
       const self = this
       await this.$auth
         .loginWith('local', {

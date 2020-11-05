@@ -166,6 +166,7 @@ export default {
     },
     logout() {
       this.$auth.logout()
+      this.showMessage('ログアウトが完了しました。')
     },
   },
 }
