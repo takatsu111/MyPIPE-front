@@ -78,11 +78,7 @@
       </v-col>
       <v-col cols="12" sm="6">
         <div class="mb-10" width="100%">
-          <v-text-field
-            v-model="name"
-            v-validate="'required'"
-            label="名前"
-          ></v-text-field>
+          <v-text-field v-model="name" label="名前"></v-text-field>
           <div
             v-for="error in errors.name"
             :key="error"
@@ -92,6 +88,18 @@
             {{ error }}
           </div>
           <v-btn @click="changeName">名前を変更</v-btn>
+        </div>
+        <div class="mb-10" width="100%">
+          <v-text-field v-model="email" label="メールアドレス"></v-text-field>
+          <div
+            v-for="error in errors.email"
+            :key="error"
+            class="mb-5"
+            style="font-size: 14px; color: red"
+          >
+            {{ error }}
+          </div>
+          <v-btn @click="changeEmail">メールアドレスを変更</v-btn>
         </div>
         <div class="mb-10" width="100%">
           <v-text-field
@@ -137,6 +145,8 @@ export default {
       id: null,
       name: '',
       email: '',
+      presentEmail: '',
+      presentName: '',
       newPassword: '',
       confirmNewPassword: '',
       imgBeforeCrop: null,
@@ -163,6 +173,8 @@ export default {
   },
   async mounted() {
     await this.getUserData()
+    this.presentEmail = this.email
+    this.presentName = this.name
   },
   methods: {
     async getUserData() {
@@ -240,6 +252,10 @@ export default {
     },
     async changeName() {
       this.errors.name = []
+      if (this.presentName === this.name) {
+        this.$nuxt.$emit('showMessage', '使用中の名前です。')
+        return
+      }
       if (this.name.length === 0) {
         this.errors.name.push('名前は必須です。')
         return
@@ -251,12 +267,55 @@ export default {
         await this.$axios.$put('/auth/api/v1/user-name', requestData)
         this.$nuxt.$emit('showMessage', '名前の変更が完了しました。')
         this.$nuxt.$emit('getUserData')
+        this.presentName = this.name
       } catch (error) {
         this.$nuxt.$emit(
           'showMessage',
           '名前の変更に失敗しました。再度試してください。'
         )
-        console.log(error)
+      }
+    },
+    async changeEmail() {
+      if (this.email === this.presentEmail) {
+        this.$nuxt.$emit('showMessage', '使用中のメールアドレスです。')
+        return
+      }
+      if (!this.email) {
+        this.$nuxt.$emit(
+          'showMessage',
+          'メールアドレスを正しく入力してください。'
+        )
+        return
+      }
+
+      const regex = RegExp(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
+      if (!regex.test(this.email)) {
+        this.$nuxt.$emit(
+          'showMessage',
+          'メールアドレスを正しく入力してください。'
+        )
+        return
+      }
+
+      const requestData = {
+        email: this.email,
+      }
+      try {
+        await this.$axios.$post('/auth/api/v1/email', requestData)
+        this.email = ''
+        this.$nuxt.$emit(
+          'showMessage',
+          'メールアドレス変更用のメールを送信しました。ご確認ください。'
+        )
+        this.email = this.presentEmail
+      } catch {
+        this.$nuxt.$emit(
+          'showMessage',
+          'メールアドレス変更用のメールを送信しました。ご確認ください。'
+        )
+        this.email = this.presentEmail
       }
     },
     async changePassword() {
