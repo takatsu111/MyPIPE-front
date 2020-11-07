@@ -28,6 +28,9 @@
           </v-row>
           <v-row justify="center">
             <v-col cols="12" md="10" sm="10">
+              <p class="text-center" style="font-size: 14px">
+                <nuxt-link to="/remember">パスワードをお忘れの方</nuxt-link>
+              </p>
               <v-btn
                 block
                 class="mr-4 blue white--text"

@@ -131,7 +131,7 @@ export default {
     async register() {
       this.name_errors = []
       this.password_errors = []
-      this.passoword_confirm_errors = []
+      this.password_confirm_errors = []
       this.birthday_errors = []
       if (!this.user_name) {
         this.name_errors.push('名前を正しく入力してください。')
@@ -158,7 +158,7 @@ export default {
       if (
         this.name_errors.length === 0 &&
         this.password_errors.length === 0 &&
-        this.passoword_confirm_errors.length === 0 &&
+        this.password_confirm_errors.length === 0 &&
         this.birthday_errors.length === 0
       ) {
         try {
