@@ -1,56 +1,54 @@
 <template>
   <div class="mt-3">
     <v-card class="mt-5 mx-auto" max-width="600">
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <v-container>
-          <v-row justify="center">
-            <p cols="12" class="mt-3 display-1 grey--text">パスワード再設定</p>
-          </v-row>
-          <v-row justify="center">
-            <v-col cols="12" md="10" sm="10">
-              <v-text-field
-                v-model="password"
-                type="password"
-                label="パスワード"
-                @keydown.enter="registerWithEnterKey"
-              />
-              <p
-                v-for="password_error in password_errors"
-                :key="password_error"
-                class="mb-0"
-                style="font-size: 14px; color: red"
-              >
-                {{ password_error }}
-              </p>
-            </v-col>
-          </v-row>
-          <v-row justify="center">
-            <v-col cols="12" md="10" sm="10">
-              <v-text-field
-                v-model="password_confirm"
-                type="password"
-                label="パスワード(再度入力してください)"
-                @keydown.enter="registerWithEnterKey"
-              />
-              <p
-                v-for="password_confirm_error in password_confirm_errors"
-                :key="password_confirm_error"
-                class="mb-0"
-                style="font-size: 14px; color: red"
-              >
-                {{ password_confirm_error }}
-              </p>
-            </v-col>
-          </v-row>
-          <v-row justify="center">
-            <v-col cols="12" md="10" sm="10">
-              <v-btn block class="mr-4 blue white--text" @click="register">
-                パスワード再設定
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
+      <v-container>
+        <v-row justify="center">
+          <p cols="12" class="mt-3 display-1 grey--text">パスワード再設定</p>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="12" md="10" sm="10">
+            <v-text-field
+              v-model="password"
+              type="password"
+              label="パスワード"
+              @keydown.enter="registerWithEnterKey"
+            />
+            <p
+              v-for="password_error in password_errors"
+              :key="password_error"
+              class="mb-0"
+              style="font-size: 14px; color: red"
+            >
+              {{ password_error }}
+            </p>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="12" md="10" sm="10">
+            <v-text-field
+              v-model="password_confirm"
+              type="password"
+              label="パスワード(再度入力してください)"
+              @keydown.enter="registerWithEnterKey"
+            />
+            <p
+              v-for="password_confirm_error in password_confirm_errors"
+              :key="password_confirm_error"
+              class="mb-0"
+              style="font-size: 14px; color: red"
+            >
+              {{ password_confirm_error }}
+            </p>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="12" md="10" sm="10">
+            <v-btn block class="mr-4 blue white--text" @click="register">
+              パスワード再設定
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
   </div>
 </template>
@@ -74,7 +72,6 @@ export default {
     async register() {
       this.password_errors = []
       this.password_confirm_errors = []
-      alert(this.password.length)
       const passwordRegex = RegExp(/^[0-9a-zA-Z]*$/)
       if (
         !passwordRegex.test(this.password) ||
