@@ -251,20 +251,9 @@
         </template>
       </template>
       <template v-slot:item.movie_id="{ item }">
-        <v-btn icon @click="showDeleteModal = true">
+        <v-btn icon @click="openDeleteMovieModal(item.movie_id)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
-        <v-dialog v-model="showDeleteModal" persistent max-width="500px">
-          <v-card class="px-12 py-8">
-            <div class="text-center mb-5">動画を削除しますか？</div>
-            <v-card-actions>
-              <span style="display: inline-block" class="mx-auto">
-                <v-btn text @click="deleteMovie(item.movie_id)"> はい </v-btn>
-                <v-btn text @click="showDeleteModal = false"> いいえ </v-btn>
-              </span>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </template>
     </v-data-table>
 
@@ -430,6 +419,17 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="showDeleteModal" persistent max-width="500px">
+      <v-card class="px-12 py-8">
+        <div class="text-center mb-5">動画を削除しますか？</div>
+        <v-card-actions>
+          <span style="display: inline-block" class="mx-auto">
+            <v-btn text @click="deleteMovie"> はい </v-btn>
+            <v-btn text @click="closeDeleteMovieModal"> いいえ </v-btn>
+          </span>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="errorMessageDialogOpen" max-width="800px" persistent>
       <v-card class="pa-5 text-center">
         <div class="mb-5">
@@ -561,6 +561,14 @@ export default {
 
       this.editMovieStatus = status
       this.editPublicDialog = true
+    },
+    openDeleteMovieModal(movieId) {
+      this.deleteMovieId = movieId
+      this.showDeleteModal = true
+    },
+    closeDeleteMovieModal() {
+      this.deleteMovieId = null
+      this.showDeleteModal = false
     },
     closeNewDialog() {
       this.resetMoviePostDialog()
@@ -774,18 +782,22 @@ export default {
         })
       this.editDialogButtonEnable = true
     },
-    async deleteMovie(movieId) {
+    async deleteMovie() {
       try {
-        await this.$axios.$delete(`/auth/api/v1/movie?movie_id=${movieId}`)
+        await this.$axios.$delete(
+          `/auth/api/v1/movie?movie_id=${this.deleteMovieId}`
+        )
         this.$nuxt.$emit('showMessage', '動画の削除が完了しました')
         this.deleteMovieId = null
         this.getMovies()
+        this.closeDeleteMovieModal()
       } catch {
         this.$nuxt.$emit(
           'showMessage',
           '動画の削除に失敗しました。再度試してください。'
         )
         this.deleteMovieId = null
+        this.closeDeleteMovieModal()
       }
     },
     resetMoviePostDialog() {
