@@ -250,6 +250,22 @@
           </v-btn>
         </template>
       </template>
+      <template v-slot:item.movie_id="{ item }">
+        <v-btn icon @click="showDeleteModal = true">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+        <v-dialog v-model="showDeleteModal" persistent max-width="500px">
+          <v-card class="px-12 py-8">
+            <div class="text-center mb-5">動画を削除しますか？</div>
+            <v-card-actions>
+              <span style="display: inline-block" class="mx-auto">
+                <v-btn text @click="deleteMovie(item.movie_id)"> はい </v-btn>
+                <v-btn text @click="showDeleteModal = false"> いいえ </v-btn>
+              </span>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
     </v-data-table>
 
     <v-dialog v-model="editDialog" width="1000px" persistent>
@@ -453,6 +469,8 @@ export default {
       editStatus: null,
       editDialogButtonEnable: true,
       cacheKey: new Date(),
+      deleteMovieId: null,
+      showDeleteModal: false,
       headers: [
         { text: 'サムネイル', value: 'thumbnail' },
         {
@@ -464,6 +482,7 @@ export default {
         { text: '進行状況', value: 'movie_status' },
         { text: '公開/非公開', value: 'movie_public' },
         { text: '投稿日', value: 'movie_created_at' },
+        { text: '削除', value: 'movie_id' },
       ],
       movies: [],
       movieFileErrors: [],
@@ -754,6 +773,20 @@ export default {
           console.log(error)
         })
       this.editDialogButtonEnable = true
+    },
+    async deleteMovie(movieId) {
+      try {
+        await this.$axios.$delete(`/auth/api/v1/movie?movie_id=${movieId}`)
+        this.$nuxt.$emit('showMessage', '動画の削除が完了しました')
+        this.deleteMovieId = null
+        this.getMovies()
+      } catch {
+        this.$nuxt.$emit(
+          'showMessage',
+          '動画の削除に失敗しました。再度試してください。'
+        )
+        this.deleteMovieId = null
+      }
     },
     resetMoviePostDialog() {
       this.$refs.movieFileInput.reset()
