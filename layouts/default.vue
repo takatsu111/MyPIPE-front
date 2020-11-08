@@ -68,16 +68,11 @@
         <v-icon v-else class="mr-3" style="font-size: 40px"
           >mdi-account-circle</v-icon
         >
-        <!-- <nuxt-link to="/mypage">
-          <div class="mr-5">
-            {{ user.user_name }}
-          </div>
-        </nuxt-link> -->
         <v-btn nuxt link to="/mypage" text
           ><span
             style="width: 60px; overflow: hidden; text-transform: none"
             class="text-center"
-            >{{ user.user_name }}</span
+            >MyPage</span
           ></v-btn
         >
         <v-btn text @click="logout">ログアウト</v-btn>
