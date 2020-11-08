@@ -28,7 +28,7 @@
       </v-col>
     </v-row>
     <v-row v-if="movie !== null" style="min-height: 3em">
-      <v-col cols="12">
+      <v-col cols="12" class="text-center">
         <v-img
           v-if="userPostedMovie.ProfileImageName !== ''"
           width="50px"
