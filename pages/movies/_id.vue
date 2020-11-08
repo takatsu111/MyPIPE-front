@@ -299,7 +299,7 @@ export default {
 
       if (this.$refs.videoPlayer === undefined) {
         location.reload()
-        return
+        return false
       }
       const self = this
       this.player = videojs(this.$refs.videoPlayer, this.options).ready(
@@ -311,6 +311,7 @@ export default {
           })
         }
       )
+      return true
     },
     confirmDeleteComment(commentId) {
       this.commentIdToDelete = commentId
