@@ -2,7 +2,7 @@
   <v-container style="max-width: 1000px">
     <v-row>
       <v-col>
-        <h2 v-if="movie !== null">
+        <h2 v-if="movie !== null" style="width: 100%; word-break: break-all">
           {{ movie.DisplayName }}
         </h2>
       </v-col>
@@ -119,6 +119,9 @@
             filled
             name="comment"
             label="コメントを入力"
+            hint="500文字まで"
+            counter="500"
+            persistent-hint
           ></v-textarea>
           <v-btn
             v-show="postCommentInProgress"
@@ -383,6 +386,11 @@ export default {
     },
     async postComment() {
       if (this.comment === '') {
+        return
+      }
+
+      if (this.comment.length > 500) {
+        this.$nuxt.$emit('showMessage', 'コメントは500文字までです。')
         return
       }
 

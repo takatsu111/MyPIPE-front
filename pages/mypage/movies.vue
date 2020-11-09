@@ -267,7 +267,14 @@
             required
             clearable
             name="editMovieTitle"
+            counter="200"
+            hint="200文字まで"
+            persistent-hint
           ></v-text-field>
+
+          <p v-if="newMovieTitleError" style="font-size: 14px; color: red">
+            {{ newMovieTitleError }}
+          </p>
 
           <v-textarea
             v-model="editMovieDescription"
@@ -305,9 +312,15 @@
           <v-text-field
             v-model="editMovieTitle"
             label="タイトル"
+            counter="200"
+            hint="200文字まで"
+            persistent-hint
             required
             clearable
           ></v-text-field>
+          <p v-if="editMovieTitleError" style="font-size: 14px; color: red">
+            {{ editMovieTitleError }}
+          </p>
           <v-btn v-if="editDialogButtonEnable" @click="editMovieInfo">
             編集完了
           </v-btn>
@@ -456,6 +469,7 @@ export default {
       newMovieThumbnailUrl: null,
       newDialog: false,
       newDialogButtonEnable: true,
+      newMovieTitleError: null,
       editMovieId: null,
       editMovieTitle: null,
       editMovieDescription: null,
@@ -468,6 +482,7 @@ export default {
       editPublicDialog: false,
       editStatus: null,
       editDialogButtonEnable: true,
+      editMovieTitleError: null,
       cacheKey: new Date(),
       deleteMovieId: null,
       showDeleteModal: false,
