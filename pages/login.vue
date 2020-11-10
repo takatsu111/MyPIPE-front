@@ -39,6 +39,31 @@
             </v-btn>
           </v-col>
         </v-row>
+        <v-row justify="center">
+          <v-col cols="12" md="10" sm="10">
+            <v-btn
+              block
+              class="mr-4 mb-4 blue white--text"
+              @click="loginAsTest1"
+            >
+              テストユーザー1としてログイン
+            </v-btn>
+            <v-btn
+              block
+              class="mr-4 mb-4 blue white--text"
+              @click="loginAsTest2"
+            >
+              テストユーザー2としてログイン
+            </v-btn>
+            <v-btn
+              block
+              class="mr-4 mb-4 blue white--text"
+              @click="loginAsTest3"
+            >
+              テストユーザー3としてログイン
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-container>
     </v-card>
   </div>
@@ -57,6 +82,21 @@ export default {
       if (event.keyCode === 13) {
         await this.loginWithAuthModule()
       }
+    },
+    async loginAsTest1() {
+      this.email = 'guest1@test.com'
+      this.password = 'firstguest'
+      await this.loginWithAuthModule()
+    },
+    async loginAsTest2() {
+      this.email = 'guest2@test.com'
+      this.password = 'secondguest'
+      await this.loginWithAuthModule()
+    },
+    async loginAsTest3() {
+      this.email = 'guest3@test.com'
+      this.password = 'thirdguest'
+      await this.loginWithAuthModule()
     },
     async loginWithAuthModule() {
       const self = this
