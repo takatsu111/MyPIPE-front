@@ -780,7 +780,6 @@ export default {
         display_name: this.editMovieTitle,
         description: this.editMovieDescription,
         public: this.editMoviePublic,
-        status: this.editMovieStatus,
       }
       const data = this
       await this.$axios
