@@ -276,6 +276,18 @@ export default {
       }
     },
     async changeEmail() {
+      if (
+        this.presentEmail === 'guest1@test.com' ||
+        this.presentEmail === 'guest2@test.com' ||
+        this.presentEmail === 'guest3@test.com'
+      ) {
+        this.$nuxt.$emit(
+          'showMessage',
+          'ゲストユーザーのメールアドレスとパスワードは変更できません。'
+        )
+        this.email = this.presentEmail
+        return
+      }
       if (this.email === this.presentEmail) {
         this.$nuxt.$emit('showMessage', '使用中のメールアドレスです。')
         return
@@ -321,6 +333,19 @@ export default {
     async changePassword() {
       this.errors.newPassword = []
       this.errors.confirmNewPassword = []
+      if (
+        this.presentEmail === 'guest1@test.com' ||
+        this.presentEmail === 'guest2@test.com' ||
+        this.presentEmail === 'guest3@test.com'
+      ) {
+        this.$nuxt.$emit(
+          'showMessage',
+          'ゲストユーザーのメールアドレスとパスワードは変更できません。'
+        )
+        this.newPassword = ''
+        this.confirmNewPassword = ''
+        return
+      }
       const newPasswordRegex = RegExp(/^[0-9a-zA-Z]*$/)
       if (
         !newPasswordRegex.test(this.newPassword) ||
