@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <v-btn depressed color="#06ACB5" dark @click="newDialog = true">
-            動画を投稿する
+            動画を投稿する(サンプル動画)
           </v-btn>
           <v-dialog v-model="newDialog" width="1000px" persistent>
             <v-card>
@@ -67,7 +67,24 @@
                   class="mb-4"
                   contain
                 ></v-img>
-
+                <p>
+                  <a
+                    href="https://mymovies-sample-movies-public.s3-ap-northeast-1.amazonaws.com/sample-movies/water_fall.zip"
+                    >サンプル動画1</a
+                  >
+                </p>
+                <p>
+                  <a
+                    href="https://mymovies-sample-movies-public.s3-ap-northeast-1.amazonaws.com/sample-movies/social_icons.zip"
+                    >サンプル動画2</a
+                  >
+                </p>
+                <p>
+                  <a
+                    href="https://mymovies-sample-movies-public.s3-ap-northeast-1.amazonaws.com/sample-movies/hand.zip"
+                    >サンプル動画3</a
+                  >
+                </p>
                 <v-btn v-if="newDialogButtonEnable" @click="uploadNewMovie">
                   投稿する
                 </v-btn>
