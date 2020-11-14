@@ -4,8 +4,11 @@
       <v-row>
         <v-col>
           <v-btn depressed color="#06ACB5" dark @click="newDialog = true">
-            動画を投稿する(サンプル動画)
+            動画を投稿する(サンプル動画あり)
           </v-btn>
+          <p>
+            ※動画のタイトルが未設定、または進行状況が「Complete」でない場合は、動画を公開できません。
+          </p>
           <v-dialog v-model="newDialog" width="1000px" persistent>
             <v-card>
               <v-icon large @click="closeNewDialog"> mdi-close </v-icon>
@@ -237,6 +240,7 @@
         <template v-if="item.movie_public === 0">
           <v-chip dark> 非公開 </v-chip>
           <v-btn
+            :disabled="item.movie_status !== 1 || !item.movie_name"
             @click="
               openChangePublicDialog(
                 item.movie_id,
